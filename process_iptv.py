@@ -143,16 +143,81 @@ def process_entries(entries: List[Tuple[str, Dict, str]], first_line: str = "") 
     """处理条目：去重、清理、排序"""
     print("🔄 开始处理频道列表...")
     
-    # 1. 清理tvg-id并构建新条目（同时清理频道名称中的"高清"）
+    def clean_channel_name(channel_name: str) -> str:
+        """
+        清理频道名称，规则：
+        1. 特别处理CCTV频道：将“CCTV1”格式规范化为“CCTV-1”，但保留后续节目名/特性
+        2. 去除结尾的通用质量后缀
+        3. 保留特性标识如“4K”、“8K”等
+        """
+        if not channel_name:
+            return channel_name
+
+        original_name = channel_name
+
+        # === 规则1：规范CCTV数字格式（保留后续节目名/特性）===
+        # 匹配 “CCTV” + 数字 + 任意后续内容
+        cctv_match = re.match(r'^(CCTV)[-\s]?(\d+)(.*)$', channel_name, re.IGNORECASE)
+        if cctv_match:
+            prefix, number, suffix = cctv_match.groups()
+            
+            # 保留的特定特性后缀列表
+            preserved_suffixes = ['4K', '8K', 'K', '新闻', '体育', '电影', '少儿', '音乐', '戏曲', '农业', '科教']
+            
+            # 检查后缀是否为需要保留的特性
+            should_preserve_suffix = False
+            preserved_part = ""
+            
+            for preserve_suffix in preserved_suffixes:
+                if suffix.strip().startswith(preserve_suffix):
+                    should_preserve_suffix = True
+                    preserved_part = suffix.strip()
+                    break
+            
+            # 构建规范化名称
+            if should_preserve_suffix:
+                channel_name = f"CCTV-{number}{preserved_part}"
+            else:
+                # 普通CCTV频道，只保留数字部分
+                channel_name = f"CCTV-{number}"
+
+        # === 规则2：去除结尾的通用质量后缀（但不删除特性标识）===
+        # 只去除纯粹的质量后缀，不删除作为频道标识一部分的
+        generic_suffixes = ['高清', '超清', 'HD', 'FHD', 'UHD', '标清', '综合']
+        
+        # 特殊处理：如果已经是CCTV-4K格式，不要删除K
+        if not re.match(r'^CCTV-\d+[48]?K$', channel_name):
+            for suffix in generic_suffixes:
+                # 检查是否是独立后缀（前面有空格或连字符）
+                if channel_name.endswith(suffix):
+                    # 确保不是特性标识的一部分
+                    if not (suffix == 'HD' and 'CCTV' in channel_name and '新闻' in channel_name):
+                        channel_name = channel_name[:-len(suffix)].strip()
+                elif channel_name.endswith(f'-{suffix}'):
+                    channel_name = channel_name[:-len(suffix)-1].strip()
+                elif channel_name.endswith(f' {suffix}'):
+                    channel_name = channel_name[:-len(suffix)-1].strip()
+
+        # === 规则3：清理多余的连字符和空格 ===
+        channel_name = re.sub(r'\s+', ' ', channel_name).strip()
+        channel_name = re.sub(r'-+', '-', channel_name)
+        
+        # 打印变化日志
+        if original_name != channel_name:
+            print(f"    频道名称标准化: {original_name} → {channel_name}")
+        
+        return channel_name
+    
+    # 1. 清理tvg-id并构建新条目（同时清理频道名称）
     processed = []
     for tvg_id, attrs, channel_line in entries:
         clean_id = clean_tvg_id(tvg_id)
         
-        # 清理频道名称中的"高清"字样
+        # 使用新的函数清理频道名称
         if attrs['channel_name']:
-            clean_channel_name = attrs['channel_name'].replace("高清", "")
+            clean_name = clean_channel_name(attrs['channel_name'])
         else:
-            clean_channel_name = ""
+            clean_name = ""
         
         # 更新频道行中的tvg-id和频道名称
         new_line = channel_line.replace(
@@ -160,12 +225,13 @@ def process_entries(entries: List[Tuple[str, Dict, str]], first_line: str = "") 
             f'tvg-id="{clean_id}"'
         )
         
-        # 如果频道名称包含"高清"，需要替换
-        if "高清" in channel_line and clean_channel_name:
+        # 如果频道名称有变化，需要替换
+        if clean_name and clean_name != attrs['channel_name']:
             # 找到原始的频道名称部分并替换
             name_start = new_line.rfind(',') + 1
-            if name_start > 0:
-                new_line = new_line[:name_start] + clean_channel_name + "\n" + attrs['stream_url']
+            url_start = new_line.rfind('\n')
+            if name_start > 0 and url_start > name_start:
+                new_line = new_line[:name_start] + clean_name + new_line[url_start:]
         
         processed.append((clean_id, new_line))
     
