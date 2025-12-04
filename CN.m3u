@@ -1,185 +1,201 @@
 #EXTM3U x-tvg-url="https://fy.188766.xyz/e.xml" tvg-shift="0"
-#EXTINF:-1 tvg-id="CCTV1" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV1.png" group-title="山东省威海市组播 山东联通",CCTV1
-http://112.247.186.37:4022/rtp/239.253.254.77:8000
-#EXTINF:-1 tvg-id="CCTV2" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV2.png" group-title="山东省威海市组播 山东联通",CCTV2
-http://112.247.186.37:4022/rtp/239.253.254.232:8000
-#EXTINF:-1 tvg-id="CCTV3" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV3.png" group-title="山东省威海市组播 山东联通",CCTV3
-http://112.247.186.37:4022/rtp/239.253.254.191:8000
-#EXTINF:-1 tvg-id="CCTV4" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV4.png" group-title="山东省威海市组播 山东联通",CCTV4
-http://112.247.186.37:4022/rtp/239.253.254.187:8000
-#EXTINF:-1 tvg-id="CCTV5" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV5.png" group-title="山东省威海市组播 山东联通",CCTV5
-http://112.247.186.37:4022/rtp/239.253.254.192:8000
-#EXTINF:-1 tvg-id="CCTV5+" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV5+.png" group-title="山东省威海市组播 山东联通",CCTV5+
-http://112.247.186.37:4022/rtp/239.253.254.80:8000
-#EXTINF:-1 tvg-id="CCTV6" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV6.png" group-title="山东省威海市组播 山东联通",CCTV6
-http://112.247.186.37:4022/rtp/239.253.254.193:8000
-#EXTINF:-1 tvg-id="CCTV7" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV7.png" group-title="山东省威海市组播 山东联通",CCTV7
-http://112.247.186.37:4022/rtp/239.253.254.233:8000
-#EXTINF:-1 tvg-id="CCTV8" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV8.png" group-title="山东省威海市组播 山东联通",CCTV8
-http://112.247.186.37:4022/rtp/239.253.254.194:8000
-#EXTINF:-1 tvg-id="CCTV9" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV9.png" group-title="山东省威海市组播 山东联通",CCTV9
-http://112.247.186.37:4022/rtp/239.253.254.79:8000
-#EXTINF:-1 tvg-id="CCTV10" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV10.png" group-title="山东省威海市组播 山东联通",CCTV10
-http://112.247.186.37:4022/rtp/239.253.254.234:8000
-#EXTINF:-1 tvg-id="CCTV11" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV11.png" group-title="山东省威海市组播 山东联通",CCTV11
-http://112.247.186.37:4022/rtp/239.253.254.169:8000
-#EXTINF:-1 tvg-id="CCTV12" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV12.png" group-title="山东省威海市组播 山东联通",CCTV12
-http://112.247.186.37:4022/rtp/239.253.254.235:8000
-#EXTINF:-1 tvg-id="CCTV13" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV13.png" group-title="山东省威海市组播 山东联通",CCTV13
-http://112.247.186.37:4022/rtp/239.253.254.175:8000
-#EXTINF:-1 tvg-id="CCTV14" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV14.png" group-title="山东省威海市组播 山东联通",CCTV14
-http://112.247.186.37:4022/rtp/239.253.254.236:8000
-#EXTINF:-1 tvg-id="CCTV15" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV15.png" group-title="山东省威海市组播 山东联通",CCTV15
-http://112.247.186.37:4022/rtp/239.253.254.170:8000
-#EXTINF:-1 tvg-id="CCTV17" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV17.png" group-title="山东省威海市组播 山东联通",CCTV17
-http://112.247.186.37:4022/rtp/239.253.254.168:8000
-#EXTINF:-1 tvg-id="东南卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/东南卫视.png" group-title="山东省威海市组播 山东联通",东南卫视
-http://112.247.186.37:4022/rtp/239.253.254.105:8000
-#EXTINF:-1 tvg-id="东方卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/东方卫视.png" group-title="山东省威海市组播 山东联通",东方卫视
-http://112.247.186.37:4022/rtp/239.253.254.86:8000
-#EXTINF:-1 tvg-id="云南卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/云南卫视.png" group-title="山东省威海市组播 山东联通",云南卫视
-http://112.247.186.37:4022/rtp/239.253.254.196:8000
-#EXTINF:-1 tvg-id="北京卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/北京卫视.png" group-title="山东省威海市组播 山东联通",北京卫视
-http://112.247.186.37:4022/rtp/239.253.254.85:8000
-#EXTINF:-1 tvg-id="吉林卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/吉林卫视.png" group-title="山东省威海市组播 山东联通",吉林卫视
-http://112.247.186.37:4022/rtp/239.253.254.173:8000
-#EXTINF:-1 tvg-id="四川卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/四川卫视.png" group-title="山东省威海市组播 山东联通",四川卫视
-http://112.247.186.37:4022/rtp/239.253.254.180:8000
-#EXTINF:-1 tvg-id="天津卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/天津卫视.png" group-title="山东省威海市组播 山东联通",天津卫视
-http://112.247.186.37:4022/rtp/239.253.254.89:8000
-#EXTINF:-1 tvg-id="安徽卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/安徽卫视.png" group-title="山东省威海市组播 山东联通",安徽卫视
-http://112.247.186.37:4022/rtp/239.253.254.87:8000
-#EXTINF:-1 tvg-id="山东卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/山东卫视.png" group-title="山东省威海市组播 山东联通",山东卫视
-http://112.247.186.37:4022/rtp/239.253.254.78:8000
-#EXTINF:-1 tvg-id="广东卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广东卫视.png" group-title="山东省威海市组播 山东联通",广东卫视
-http://112.247.186.37:4022/rtp/239.253.254.90:8000
-#EXTINF:-1 tvg-id="广西卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广西卫视.png" group-title="山东省威海市组播 山东联通",广西卫视
-http://112.247.186.37:4022/rtp/239.253.254.197:8000
-#EXTINF:-1 tvg-id="江苏卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/江苏卫视.png" group-title="山东省威海市组播 山东联通",江苏卫视
-http://112.247.186.37:4022/rtp/239.253.254.83:8000
-#EXTINF:-1 tvg-id="江西卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/江西卫视.png" group-title="山东省威海市组播 山东联通",江西卫视
-http://112.247.186.37:4022/rtp/239.253.254.47:8000
-#EXTINF:-1 tvg-id="河北卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/河北卫视.png" group-title="山东省威海市组播 山东联通",河北卫视
-http://112.247.186.37:4022/rtp/239.253.254.112:8000
-#EXTINF:-1 tvg-id="河南卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/河南卫视.png" group-title="山东省威海市组播 山东联通",河南卫视
-http://112.247.186.37:4022/rtp/239.253.254.190:8000
-#EXTINF:-1 tvg-id="浙江卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/浙江卫视.png" group-title="山东省威海市组播 山东联通",浙江卫视
-http://112.247.186.37:4022/rtp/239.253.254.84:8000
-#EXTINF:-1 tvg-id="海南卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/海南卫视.png" group-title="山东省威海市组播 山东联通",海南卫视
-http://112.247.186.37:4022/rtp/239.253.254.179:8000
-#EXTINF:-1 tvg-id="深圳卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/深圳卫视.png" group-title="山东省威海市组播 山东联通",深圳卫视
-http://112.247.186.37:4022/rtp/239.253.254.91:8000
-#EXTINF:-1 tvg-id="湖北卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/湖北卫视.png" group-title="山东省威海市组播 山东联通",湖北卫视
-http://112.247.186.37:4022/rtp/239.253.254.88:8000
-#EXTINF:-1 tvg-id="湖南卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/湖南卫视.png" group-title="山东省威海市组播 山东联通",湖南卫视
-http://112.247.186.37:4022/rtp/239.253.254.82:8000
-#EXTINF:-1 tvg-id="甘肃卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/甘肃卫视.png" group-title="山东省威海市组播 山东联通",甘肃卫视
-http://112.247.186.37:4022/rtp/239.253.254.74:8000
-#EXTINF:-1 tvg-id="贵州卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/贵州卫视.png" group-title="山东省威海市组播 山东联通",贵州卫视
-http://112.247.186.37:4022/rtp/239.253.254.113:8000
-#EXTINF:-1 tvg-id="辽宁卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/辽宁卫视.png" group-title="山东省威海市组播 山东联通",辽宁卫视
-http://112.247.186.37:4022/rtp/239.253.254.92:8000
-#EXTINF:-1 tvg-id="重庆卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/重庆卫视.png" group-title="山东省威海市组播 山东联通",重庆卫视
-http://112.247.186.37:4022/rtp/239.253.254.38:8000
-#EXTINF:-1 tvg-id="青海卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/青海卫视.png" group-title="山东省威海市组播 山东联通",青海卫视
-http://112.247.186.37:4022/rtp/239.253.254.195:8000
-#EXTINF:-1 tvg-id="黑龙江卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/黑龙江卫视.png" group-title="山东省威海市组播 山东联通",黑龙江卫视
-http://112.247.186.37:4022/rtp/239.253.254.93:8000
-#EXTINF:-1 tvg-id="CETV1" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CETV1.png" group-title="山东省威海市组播 山东联通",CETV1
-http://112.247.186.37:4022/rtp/239.253.254.110:8000
-#EXTINF:-1 tvg-id="CETV4" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CETV4.png" group-title="山东省威海市组播 山东联通",CETV4
-http://112.247.186.37:4022/rtp/239.253.254.116:8000
-#EXTINF:-1 tvg-id="CGTN" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CGTN.png" group-title="山东省威海市组播 山东联通",CGTN
-http://112.247.186.37:4022/rtp/239.253.254.189:8000
-#EXTINF:-1 tvg-id="CHC动作电影" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CHC动作电影.png" group-title="山东省威海市组播 山东联通",CHC动作电影
-http://112.247.186.37:4022/rtp/239.253.254.153:8000
-#EXTINF:-1 tvg-id="CHC家庭影院" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CHC家庭影院.png" group-title="山东省威海市组播 山东联通",CHC家庭影院
-http://112.247.186.37:4022/rtp/239.253.254.152:8000
-#EXTINF:-1 tvg-id="CHC电影" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CHC高清电影.png" group-title="山东省威海市组播 山东联通",CHC高清电影
-http://112.247.186.37:4022/rtp/239.253.254.154:8000
-#EXTINF:-1 tvg-id="东方卫视4K" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/东方卫视4K.png" group-title="山东省威海市组播 山东联通",东方卫视4K
-http://112.247.186.37:4022/rtp/239.253.242.176:8000
-#EXTINF:-1 tvg-id="东方财经" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/东方财经.png" group-title="山东省威海市组播 山东联通",东方财经
-http://112.247.186.37:4022/rtp/239.253.254.94:8000
-#EXTINF:-1 tvg-id="中国交通" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/中国交通.png" group-title="山东省威海市组播 山东联通",中国交通
-http://112.247.186.37:4022/rtp/239.253.254.177:8000
-#EXTINF:-1 tvg-id="动漫秀场" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/动漫秀场.png" group-title="山东省威海市组播 山东联通",动漫秀场
-http://112.247.186.37:4022/rtp/239.253.254.115:8000
-#EXTINF:-1 tvg-id="北京卫视4K" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/北京卫视4K.png" group-title="山东省威海市组播 山东联通",北京卫视4K
-http://112.247.186.37:4022/rtp/239.253.242.200:8000
-#EXTINF:-1 tvg-id="卡酷少儿" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/卡酷少儿.png" group-title="山东省威海市组播 山东联通",卡酷少儿
-http://112.247.186.37:4022/rtp/239.253.254.66:8000
-#EXTINF:-1 tvg-id="四川卫视4K" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/四川卫视4K.png" group-title="山东省威海市组播 山东联通",四川卫视4K
-http://112.247.186.37:4022/rtp/239.253.242.123:8000
-#EXTINF:-1 tvg-id="四海钓鱼" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/四海钓鱼.png" group-title="山东省威海市组播 山东联通",四海钓鱼
-http://112.247.186.37:4022/rtp/239.253.254.144:8000
-#EXTINF:-1 tvg-id="山东体育" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/山东体育.png" group-title="山东省威海市组播 山东联通",山东体育
-http://112.247.186.37:4022/rtp/239.253.254.22:8000
-#EXTINF:-1 tvg-id="山东农科" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/山东农科.png" group-title="山东省威海市组播 山东联通",山东农科
-http://112.247.186.37:4022/rtp/239.253.254.24:8000
-#EXTINF:-1 tvg-id="山东少儿" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/山东少儿.png" group-title="山东省威海市组播 山东联通",山东少儿
-http://112.247.186.37:4022/rtp/239.253.254.25:8000
-#EXTINF:-1 tvg-id="山东教育" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/山东教育.png" group-title="山东省威海市组播 山东联通",山东教育
-http://112.247.186.37:4022/rtp/239.253.254.59:8000
-#EXTINF:-1 tvg-id="山东文旅" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/山东文旅.png" group-title="山东省威海市组播 山东联通",山东文旅
-http://112.247.186.37:4022/rtp/239.253.254.160:8000
-#EXTINF:-1 tvg-id="山东新闻" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/山东新闻.png" group-title="山东省威海市组播 山东联通",山东新闻
-http://112.247.186.37:4022/rtp/239.253.254.23:8000
-#EXTINF:-1 tvg-id="山东生活" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/山东生活.png" group-title="山东省威海市组播 山东联通",山东生活
-http://112.247.186.37:4022/rtp/239.253.254.151:8000
-#EXTINF:-1 tvg-id="山东综艺" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/山东综艺.png" group-title="山东省威海市组播 山东联通",山东综艺
-http://112.247.186.37:4022/rtp/239.253.254.159:8000
-#EXTINF:-1 tvg-id="山东购物" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/山东购物.png" group-title="山东省威海市组播 山东联通",山东购物
-http://112.247.186.37:4022/rtp/239.253.254.104:8000
-#EXTINF:-1 tvg-id="山东齐鲁" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/山东齐鲁.png" group-title="山东省威海市组播 山东联通",山东齐鲁
-http://112.247.186.37:4022/rtp/239.253.254.114:8000
-#EXTINF:-1 tvg-id="崂山" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/崂山.png" group-title="山东省威海市组播 山东联通",崂山
-http://112.247.186.37:4022/rtp/239.253.254.242:8000
-#EXTINF:-1 tvg-id="平度" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/平度.png" group-title="山东省威海市组播 山东联通",平度
-http://112.247.186.37:4022/rtp/239.253.254.248:8000
-#EXTINF:-1 tvg-id="广东卫视4K" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广东卫视4K.png" group-title="山东省威海市组播 山东联通",广东卫视4K
-http://112.247.186.37:4022/rtp/239.253.242.108:8000
-#EXTINF:-1 tvg-id="文物宝库" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/文物宝库.png" group-title="山东省威海市组播 山东联通",文物宝库
-http://112.247.186.37:4022/rtp/239.253.254.141:8000
-#EXTINF:-1 tvg-id="梨园" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/梨园.png" group-title="山东省威海市组播 山东联通",梨园
-http://112.247.186.37:4022/rtp/239.253.254.139:8000
-#EXTINF:-1 tvg-id="武术世界" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/武术世界.png" group-title="山东省威海市组播 山东联通",武术世界
-http://112.247.186.37:4022/rtp/239.253.254.140:8000
-#EXTINF:-1 tvg-id="法治天地" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/法治天地.png" group-title="山东省威海市组播 山东联通",法治天地
-http://112.247.186.37:4022/rtp/239.253.254.96:8000
-#EXTINF:-1 tvg-id="浙江卫视4K" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/浙江卫视4K.png" group-title="山东省威海市组播 山东联通",浙江卫视4K
-http://112.247.186.37:4022/rtp/239.253.242.27:8000
-#EXTINF:-1 tvg-id="海洋" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/海洋.png" group-title="山东省威海市组播 山东联通",海洋
-http://112.247.186.37:4022/rtp/239.253.254.67:8000
-#EXTINF:-1 tvg-id="深圳卫视4K" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/深圳卫视4K.png" group-title="山东省威海市组播 山东联通",深圳卫视4K
-http://112.247.186.37:4022/rtp/239.253.242.61:8000
-#EXTINF:-1 tvg-id="游戏风云" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/游戏风云.png" group-title="山东省威海市组播 山东联通",游戏风云
-http://112.247.186.37:4022/rtp/239.253.254.95:8000
-#EXTINF:-1 tvg-id="湖南卫视4K" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/湖南卫视4K.png" group-title="山东省威海市组播 山东联通",湖南卫视4K
-http://112.247.186.37:4022/rtp/239.253.242.28:8000
-#EXTINF:-1 tvg-id="生活时尚" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/生活时尚.png" group-title="山东省威海市组播 山东联通",生活时尚
-http://112.247.186.37:4022/rtp/239.253.254.99:8000
-#EXTINF:-1 tvg-id="精彩电影" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/精彩电影.png" group-title="山东省威海市组播 山东联通",精彩电影
-http://112.247.186.37:4022/rtp/239.253.254.142:8000
-#EXTINF:-1 tvg-id="综合" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/综合.png" group-title="山东省威海市组播 山东联通",
-http://112.247.186.37:4022/rtp/239.253.254.246:8000
-#EXTINF:-1 tvg-id="茶频道" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/茶频道.png" group-title="山东省威海市组播 山东联通",茶频道
-http://112.247.186.37:4022/rtp/239.253.254.143:8000
-#EXTINF:-1 tvg-id="莱西" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/莱西.png" group-title="山东省威海市组播 山东联通",莱西
-http://112.247.186.37:4022/rtp/239.253.254.247:8000
-#EXTINF:-1 tvg-id="都市剧场" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/都市剧场.png" group-title="山东省威海市组播 山东联通",都市剧场
-http://112.247.186.37:4022/rtp/239.253.254.98:8000
-#EXTINF:-1 tvg-id="金色学堂" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/金色学堂.png" group-title="山东省威海市组播 山东联通",金色学堂
-http://112.247.186.37:4022/rtp/239.253.254.101:8000
-#EXTINF:-1 tvg-id="金鹰卡通" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/金鹰卡通.png" group-title="山东省威海市组播 山东联通",金鹰卡通
-http://112.247.186.37:4022/rtp/239.253.254.117:8000
-#EXTINF:-1 tvg-id="金鹰纪实" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/金鹰纪实.png" group-title="山东省威海市组播 山东联通",金鹰纪实
-http://112.247.186.37:4022/rtp/239.253.254.103:8000
-#EXTINF:-1 tvg-id="青岛李沧" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/青岛李沧.png" group-title="山东省威海市组播 山东联通",青岛李沧
-http://112.247.186.37:4022/rtp/239.253.254.253:8000
-#EXTINF:-1 tvg-id="青岛生活" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/青岛生活.png" group-title="山东省威海市组播 山东联通",青岛生活
-http://112.247.186.37:4022/rtp/239.253.254.244:8000
-#EXTINF:-1 tvg-id="青岛综合" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/青岛综合.png" group-title="山东省威海市组播 山东联通",青岛
-http://112.247.186.37:4022/rtp/239.253.254.243:8000
-#EXTINF:-1 tvg-id="魅力足球" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/魅力足球.png" group-title="山东省威海市组播 山东联通",魅力足球
-http://112.247.186.37:4022/rtp/239.253.254.100:8000
+#EXTINF:-1 tvg-id="CCTV1" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV1.png" group-title="广东省肇庆市酒店 广东电信",CCTV1
+http://113.95.136.9:9901/tsfile/live/1020_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="CCTV2" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV2.png" group-title="广东省肇庆市酒店 广东电信",CCTV2
+http://113.95.136.9:9901/tsfile/live/1021_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="CCTV3" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV3.png" group-title="广东省肇庆市酒店 广东电信",CCTV3
+http://113.95.136.9:9901/tsfile/live/1022_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="CCTV4" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV4.png" group-title="广东省肇庆市酒店 广东电信",CCTV4
+http://113.95.136.9:9901/tsfile/live/1023_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="CCTV5" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV5.png" group-title="广东省肇庆市酒店 广东电信",CCTV5
+http://113.95.136.9:9901/tsfile/live/1024_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="CCTV5+" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV5+.png" group-title="广东省肇庆市酒店 广东电信",CCTV5+
+http://113.95.136.9:9901/tsfile/live/1025_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="CCTV6" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV6.png" group-title="广东省肇庆市酒店 广东电信",CCTV6
+http://113.95.136.9:9901/tsfile/live/1026_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="CCTV7" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV7.png" group-title="广东省肇庆市酒店 广东电信",CCTV7
+http://113.95.136.9:9901/tsfile/live/1027_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="CCTV8" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV8.png" group-title="广东省肇庆市酒店 广东电信",CCTV8
+http://113.95.136.9:9901/tsfile/live/1028_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="CCTV9" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV9.png" group-title="广东省肇庆市酒店 广东电信",CCTV9
+http://113.95.136.9:9901/tsfile/live/1029_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="CCTV10" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV10.png" group-title="广东省肇庆市酒店 广东电信",CCTV10
+http://113.95.136.9:9901/tsfile/live/1030_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="CCTV11" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV11.png" group-title="广东省肇庆市酒店 广东电信",CCTV11
+http://113.95.136.9:9901/tsfile/live/1031_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="CCTV12" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV12.png" group-title="广东省肇庆市酒店 广东电信",CCTV12
+http://113.95.136.9:9901/tsfile/live/1032_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="CCTV13" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV13.png" group-title="广东省肇庆市酒店 广东电信",CCTV13
+http://113.95.136.9:9901/tsfile/live/1033_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="CCTV14" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV14.png" group-title="广东省肇庆市酒店 广东电信",CCTV14
+http://113.95.136.9:9901/tsfile/live/1034_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="CCTV15" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV15.png" group-title="广东省肇庆市酒店 广东电信",CCTV15
+http://113.95.136.9:9901/tsfile/live/1035_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="东南卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/东南卫视高清.png" group-title="广东省肇庆市酒店 广东电信",东南卫视
+http://113.95.136.9:9901/tsfile/live/1070_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="东方卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/东方卫视高清.png" group-title="广东省肇庆市酒店 广东电信",东方卫视
+http://113.95.136.9:9901/tsfile/live/1051_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="兵团卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/兵团卫视.png" group-title="广东省肇庆市酒店 广东电信",兵团卫视
+http://113.95.136.9:9901/tsfile/live/1087_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="凤凰卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/凤凰卫视.png" group-title="广东省肇庆市酒店 广东电信",凤凰卫视
+http://113.95.136.9:9901/tsfile/live/1036_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="北京卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/北京卫视高清.png" group-title="广东省肇庆市酒店 广东电信",北京卫视
+http://113.95.136.9:9901/tsfile/live/1055_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="吉林卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/吉林卫视高清.png" group-title="广东省肇庆市酒店 广东电信",吉林卫视
+http://113.95.136.9:9901/tsfile/live/1071_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="四川卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/四川卫视高清.png" group-title="广东省肇庆市酒店 广东电信",四川卫视
+http://113.95.136.9:9901/tsfile/live/1063_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="天津卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/天津卫视高清.png" group-title="广东省肇庆市酒店 广东电信",天津卫视
+http://113.95.136.9:9901/tsfile/live/1056_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="宁夏卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/宁夏卫视.png" group-title="广东省肇庆市酒店 广东电信",宁夏卫视
+http://113.95.136.9:9901/tsfile/live/1083_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="安徽卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/安徽卫视高清.png" group-title="广东省肇庆市酒店 广东电信",安徽卫视
+http://113.95.136.9:9901/tsfile/live/1065_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="少儿卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/少儿卫视.png" group-title="广东省肇庆市酒店 广东电信",少儿卫视
+http://113.95.136.9:9901/tsfile/live/1038_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="山东卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/山东卫视高清.png" group-title="广东省肇庆市酒店 广东电信",山东卫视
+http://113.95.136.9:9901/tsfile/live/1057_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="山西卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/山西卫视.png" group-title="广东省肇庆市酒店 广东电信",山西卫视
+http://113.95.136.9:9901/tsfile/live/1078_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="广东卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广东卫视高清.png" group-title="广东省肇庆市酒店 广东电信",广东卫视
+http://113.95.136.9:9901/tsfile/live/1010_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="广西卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广西卫视.png" group-title="广东省肇庆市酒店 广东电信",广西卫视
+http://113.95.136.9:9901/tsfile/live/1074_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="江苏卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/江苏卫视高清.png" group-title="广东省肇庆市酒店 广东电信",江苏卫视
+http://113.95.136.9:9901/tsfile/live/1050_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="江西卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/江西卫视高清.png" group-title="广东省肇庆市酒店 广东电信",江西卫视
+http://113.95.136.9:9901/tsfile/live/1058_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="河北卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/河北卫视高清.png" group-title="广东省肇庆市酒店 广东电信",河北卫视
+http://113.95.136.9:9901/tsfile/live/1069_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="浙江卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/浙江卫视高清.png" group-title="广东省肇庆市酒店 广东电信",浙江卫视
+http://113.95.136.9:9901/tsfile/live/1049_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="深圳卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/深圳卫视高清.png" group-title="广东省肇庆市酒店 广东电信",深圳卫视
+http://113.95.136.9:9901/tsfile/live/1059_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="湖北卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/湖北卫视高清.png" group-title="广东省肇庆市酒店 广东电信",湖北卫视
+http://113.95.136.9:9901/tsfile/live/1060_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="湖南卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/湖南卫视高清.png" group-title="广东省肇庆市酒店 广东电信",湖南卫视
+http://113.95.136.9:9901/tsfile/live/1048_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="综合卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/综合卫视.png" group-title="广东省肇庆市酒店 广东电信",综合卫视
+http://113.95.136.9:9901/tsfile/live/1085_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="西藏卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/西藏卫视.png" group-title="广东省肇庆市酒店 广东电信",西藏卫视
+http://113.95.136.9:9901/tsfile/live/1084_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="贵州卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/贵州卫视高清.png" group-title="广东省肇庆市酒店 广东电信",贵州卫视
+http://113.95.136.9:9901/tsfile/live/1062_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="辽宁卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/辽宁卫视高清.png" group-title="广东省肇庆市酒店 广东电信",辽宁卫视
+http://113.95.136.9:9901/tsfile/live/1061_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="重庆卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/重庆卫视高清.png" group-title="广东省肇庆市酒店 广东电信",重庆卫视
+http://113.95.136.9:9901/tsfile/live/1068_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="陕西卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/陕西卫视.png" group-title="广东省肇庆市酒店 广东电信",陕西卫视
+http://113.95.136.9:9901/tsfile/live/1077_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="黑龙江卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/黑龙江卫视高清.png" group-title="广东省肇庆市酒店 广东电信",黑龙江卫视
+http://113.95.136.9:9901/tsfile/live/1054_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="CHC电影" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CHC高清电影.png" group-title="广东省肇庆市酒店 广东电信",CHC高清电影
+http://113.95.136.9:9901/tsfile/live/1046_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="上海纪实" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/上海纪实高清.png" group-title="广东省肇庆市酒店 广东电信",上海纪实
+http://113.95.136.9:9901/tsfile/live/1067_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="世界地理" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/世界地理高清.png" group-title="广东省肇庆市酒店 广东电信",世界地理
+http://113.95.136.9:9901/tsfile/live/1095_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="云浮综合" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/云浮综合.png" group-title="广东省肇庆市酒店 广东电信",云浮
+http://113.95.136.9:9901/tsfile/live/1015_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="五华" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/五华.png" group-title="广东省肇庆市酒店 广东电信",五华
+http://113.95.136.9:9901/tsfile/live/1000_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="内蒙古" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/内蒙古.png" group-title="广东省肇庆市酒店 广东电信",内蒙古
+http://113.95.136.9:9901/tsfile/live/1079_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="南方一" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/南方一高清.png" group-title="广东省肇庆市酒店 广东电信",南方一
+http://113.95.136.9:9901/tsfile/live/1016_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="南方二" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/南方二.png" group-title="广东省肇庆市酒店 广东电信",南方二
+http://113.95.136.9:9901/tsfile/live/1017_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="南方五" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/南方五.png" group-title="广东省肇庆市酒店 广东电信",南方五
+http://113.95.136.9:9901/tsfile/live/1019_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="南方四" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/南方四.png" group-title="广东省肇庆市酒店 广东电信",南方四
+http://113.95.136.9:9901/tsfile/live/1018_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="南方购物" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/南方购物.png" group-title="广东省肇庆市酒店 广东电信",南方购物
+http://113.95.136.9:9901/tsfile/live/1106_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="嘉佳卡通" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/嘉佳卡通.png" group-title="广东省肇庆市酒店 广东电信",嘉佳卡通
+http://113.95.136.9:9901/tsfile/live/1041_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="央视文化" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/央视文化高清.png" group-title="广东省肇庆市酒店 广东电信",央视文化
+http://113.95.136.9:9901/tsfile/live/1099_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="少儿动画" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/少儿动画.png" group-title="广东省肇庆市酒店 广东电信",少儿动画
+http://113.95.136.9:9901/tsfile/live/1042_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="山歌台" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/山歌台.png" group-title="广东省肇庆市酒店 广东电信",山歌台
+http://113.95.136.9:9901/tsfile/live/1004_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="广东体育" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广东体育高清.png" group-title="广东省肇庆市酒店 广东电信",广东体育
+http://113.95.136.9:9901/tsfile/live/1014_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="广东公共" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广东公共.png" group-title="广东省肇庆市酒店 广东电信",广东公共
+http://113.95.136.9:9901/tsfile/live/1013_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="广东新闻" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广东新闻.png" group-title="广东省肇庆市酒店 广东电信",广东新闻
+http://113.95.136.9:9901/tsfile/live/1012_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="广东珠江" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广东珠江高清.png" group-title="广东省肇庆市酒店 广东电信",广东珠江
+http://113.95.136.9:9901/tsfile/live/1011_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="广东移动" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广东移动.png" group-title="广东省肇庆市酒店 广东电信",广东移动
+http://113.95.136.9:9901/tsfile/live/1105_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="广州综合HD" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广州综合HD.png" group-title="广东省肇庆市酒店 广东电信",广州
+http://113.95.136.9:9901/tsfile/live/1043_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="怀旧剧场" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/怀旧剧场高清.png" group-title="广东省肇庆市酒店 广东电信",怀旧剧场
+http://113.95.136.9:9901/tsfile/live/1098_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="惠州1" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/惠州1.png" group-title="广东省肇庆市酒店 广东电信",惠州1
+http://113.95.136.9:9901/tsfile/live/1103_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="房产" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/房产.png" group-title="广东省肇庆市酒店 广东电信",房产
+http://113.95.136.9:9901/tsfile/live/1107_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="揭阳综合" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/揭阳综合.png" group-title="广东省肇庆市酒店 广东电信",揭阳
+http://113.95.136.9:9901/tsfile/live/1044_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="收视指南" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/收视指南.png" group-title="广东省肇庆市酒店 广东电信",收视指南
+http://113.95.136.9:9901/tsfile/live/1091_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="本港台" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/本港台.png" group-title="广东省肇庆市酒店 广东电信",本港台
+http://113.95.136.9:9901/tsfile/live/1072_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="梅县1" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/梅县1.png" group-title="广东省肇庆市酒店 广东电信",梅县1
+http://113.95.136.9:9901/tsfile/live/1007_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="梅州1" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/梅州1.png" group-title="广东省肇庆市酒店 广东电信",梅州1
+http://113.95.136.9:9901/tsfile/live/1002_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="梅州2" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/梅州2.png" group-title="广东省肇庆市酒店 广东电信",梅州2
+http://113.95.136.9:9901/tsfile/live/1003_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="江门综合" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/江门综合.png" group-title="广东省肇庆市酒店 广东电信",江门
+http://113.95.136.9:9901/tsfile/live/1037_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="河源公共" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/河源公共.png" group-title="广东省肇庆市酒店 广东电信",河源公共
+http://113.95.136.9:9901/tsfile/live/1101_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="河源综合" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/河源综合.png" group-title="广东省肇庆市酒店 广东电信",河源
+http://113.95.136.9:9901/tsfile/live/1100_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="法治" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/法治.png" group-title="广东省肇庆市酒店 广东电信",法治
+http://113.95.136.9:9901/tsfile/live/1111_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="测试" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/测试.png" group-title="广东省肇庆市酒店 广东电信",测试
+http://113.95.136.9:9901/tsfile/live/1005_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="深圳体育健康" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/深圳体育健康.png" group-title="广东省肇庆市酒店 广东电信",深圳体育健康
+http://113.95.136.9:9901/tsfile/live/1052_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="深圳都市频道" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/深圳都市频道.png" group-title="广东省肇庆市酒店 广东电信",深圳都市频道
+http://113.95.136.9:9901/tsfile/live/1001_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="深圳龙岗频道" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/深圳龙岗频道.png" group-title="广东省肇庆市酒店 广东电信",深圳龙岗频道
+http://113.95.136.9:9901/tsfile/live/1008_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="炫动卡通" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/炫动卡通.png" group-title="广东省肇庆市酒店 广东电信",炫动卡通
+http://113.95.136.9:9901/tsfile/live/1040_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="热播剧场" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/热播剧场.png" group-title="广东省肇庆市酒店 广东电信",热播剧场
+http://113.95.136.9:9901/tsfile/live/1089_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="珠海-1" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/珠海-1.png" group-title="广东省肇庆市酒店 广东电信",珠海-1
+http://113.95.136.9:9901/tsfile/live/1009_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="相声小品" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/相声小品.png" group-title="广东省肇庆市酒店 广东电信",相声小品
+http://113.95.136.9:9901/tsfile/live/1088_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="第一剧场" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/第一剧场高清.png" group-title="广东省肇庆市酒店 广东电信",第一剧场
+http://113.95.136.9:9901/tsfile/live/1093_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="粤荟萃" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/粤荟萃.png" group-title="广东省肇庆市酒店 广东电信",粤荟萃
+http://113.95.136.9:9901/tsfile/live/1108_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="经典电影" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/经典电影.png" group-title="广东省肇庆市酒店 广东电信",经典电影
+http://113.95.136.9:9901/tsfile/live/1045_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="翡翠台" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/翡翠台.png" group-title="广东省肇庆市酒店 广东电信",翡翠台
+http://113.95.136.9:9901/tsfile/live/1006_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="谍战剧场" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/谍战剧场.png" group-title="广东省肇庆市酒店 广东电信",谍战剧场
+http://113.95.136.9:9901/tsfile/live/1047_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="足球" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/足球.png" group-title="广东省肇庆市酒店 广东电信",足球
+http://113.95.136.9:9901/tsfile/live/1109_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="野外" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/野外.png" group-title="广东省肇庆市酒店 广东电信",野外
+http://113.95.136.9:9901/tsfile/live/1110_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="金鹰卡通" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/金鹰卡通.png" group-title="广东省肇庆市酒店 广东电信",金鹰卡通
+http://113.95.136.9:9901/tsfile/live/1039_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="金鹰纪实" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/金鹰纪实高清.png" group-title="广东省肇庆市酒店 广东电信",金鹰纪实
+http://113.95.136.9:9901/tsfile/live/1064_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="风云剧场" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/风云剧场高清.png" group-title="广东省肇庆市酒店 广东电信",风云剧场
+http://113.95.136.9:9901/tsfile/live/1097_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="风云足球" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/风云足球高清.png" group-title="广东省肇庆市酒店 广东电信",风云足球
+http://113.95.136.9:9901/tsfile/live/1094_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="风云音乐" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/风云音乐高清.png" group-title="广东省肇庆市酒店 广东电信",风云音乐
+http://113.95.136.9:9901/tsfile/live/1096_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="魅力时尚" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/魅力时尚.png" group-title="广东省肇庆市酒店 广东电信",魅力时尚
+http://113.95.136.9:9901/tsfile/live/1090_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
