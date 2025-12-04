@@ -491,7 +491,7 @@ def main():
     print("="*60)
     
     # 目标URL
-    url = "http://iptv.cqshushu.com/?s=112.247.186.37%3A4022&t=multicast&channels=1&format=m3u"
+    url = "http://iptv.cqshushu.com/?s=113.95.136.9%3A9901&t=hotel&channels=1&format=m3u"
     print(f"🌐 目标URL: {url}")
     
     # 1. 获取内容
