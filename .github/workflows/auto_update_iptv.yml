@@ -34,7 +34,6 @@ jobs:
       # 4. 运行处理脚本
       - name: Run IPTV processing script
         run: |
-          cd scripts
           python process_iptv.py
           echo "生成的CN.m3u内容预览："
           head -30 ../CN.m3u
