@@ -3,7 +3,7 @@
 IPTV列表处理脚本
 功能：
 1. 从URL获取M3U内容（使用requests库处理403）
-2. 去除tvg-id中的"高清"字样
+2. 去除tvg-id和频道名称中的"高清"字样
 3. 根据tvg-id去重（保留最后一个）
 4. 按规则排序：CCTV按数字排序 → 卫视 → 其他
 5. 保存为CN.m3u
@@ -45,13 +45,22 @@ def fetch_m3u_content(url: str) -> str:
         print(f"获取内容失败: {e}")
         sys.exit(1)
 
-def parse_m3u(content: str) -> List[Tuple[str, Dict, str]]:
+def parse_m3u(content: str) -> List[Tuple[str, Dict, str, str]]:
     """
-    解析M3U内容，返回格式：(tvg_id, attributes, channel_line)
+    解析M3U内容，返回格式：(tvg_id, attributes, channel_line, first_line)
+    新增返回 first_line: 原始的第一行（可能是#EXTM3U头部）
     """
-    entries = []
     lines = content.strip().split('\n')
+    entries = []
     channel_count = 0
+    first_line = ""
+    
+    # 保存原始的第一行（如果是#EXTM3U头部）
+    if lines and lines[0].startswith('#EXTM3U'):
+        first_line = lines[0]
+        print(f"识别到文件头: {first_line}")
+        # 移除第一行，以便后续解析频道条目
+        lines = lines[1:]
     
     i = 0
     while i < len(lines):
@@ -99,7 +108,7 @@ def parse_m3u(content: str) -> List[Tuple[str, Dict, str]]:
         i += 1
     
     print(f"📊 解析出 {channel_count} 个频道条目")
-    return entries
+    return entries, first_line  # 现在返回两个值：条目和第一行
 
 def clean_tvg_id(tvg_id: str) -> str:
     """清理tvg-id：去除'高清'字样并标准化"""
@@ -130,20 +139,34 @@ def extract_cctv_number(tvg_id: str) -> int:
     # 如果没有数字（如CCTV-新闻），返回一个大数使其排在数字频道后面
     return 9998
 
-def process_entries(entries: List[Tuple[str, Dict, str]]) -> List[str]:
+def process_entries(entries: List[Tuple[str, Dict, str]], first_line: str = "") -> List[str]:
     """处理条目：去重、清理、排序"""
     print("🔄 开始处理频道列表...")
     
-    # 1. 清理tvg-id并构建新条目
+    # 1. 清理tvg-id并构建新条目（同时清理频道名称中的"高清"）
     processed = []
     for tvg_id, attrs, channel_line in entries:
         clean_id = clean_tvg_id(tvg_id)
         
-        # 更新频道行中的tvg-id
+        # 清理频道名称中的"高清"字样
+        if attrs['channel_name']:
+            clean_channel_name = attrs['channel_name'].replace("高清", "")
+        else:
+            clean_channel_name = ""
+        
+        # 更新频道行中的tvg-id和频道名称
         new_line = channel_line.replace(
             f'tvg-id="{tvg_id}"', 
             f'tvg-id="{clean_id}"'
         )
+        
+        # 如果频道名称包含"高清"，需要替换
+        if "高清" in channel_line and clean_channel_name:
+            # 找到原始的频道名称部分并替换
+            name_start = new_line.rfind(',') + 1
+            if name_start > 0:
+                new_line = new_line[:name_start] + clean_channel_name + "\n" + attrs['stream_url']
+        
         processed.append((clean_id, new_line))
     
     # 2. 根据tvg-id去重（保留最后一个）
@@ -182,8 +205,11 @@ def process_entries(entries: List[Tuple[str, Dict, str]]) -> List[str]:
     
     print(f"📈 排序结果：CCTV频道 {cctv_count} 个，卫视频道 {weishi_count} 个，其他频道 {other_count} 个")
     
-    # 添加M3U文件头
-    result_lines = ["#EXTM3U"]
+    # 添加M3U文件头 - 使用原始的第一行，如果为空则使用默认
+    if first_line:
+        result_lines = [first_line]
+    else:
+        result_lines = ["#EXTM3U"]
     result_lines.extend(line for _, line in sorted_items)
     
     return result_lines
@@ -203,6 +229,10 @@ def save_output(result_lines: List[str], filename: str = "CN.m3u"):
     
     print(f"📁 文件验证：实际保存了 {len(saved_lines)} 行")
     
+    # 显示文件头
+    if saved_lines:
+        print(f"📋 文件头: {saved_lines[0].strip()}")
+    
     return filename
 
 def preview_results(result_lines: List[str], count: int = 15):
@@ -215,7 +245,8 @@ def preview_results(result_lines: List[str], count: int = 15):
     weishi_shown = 0
     other_shown = 0
     
-    for i, line in enumerate(result_lines[1:], 1):  # 跳过#EXTM3U头
+    # 跳过第一行（文件头）
+    for i, line in enumerate(result_lines[1:], 1):
         if i > count:
             break
             
@@ -262,15 +293,15 @@ def main():
     # 1. 获取内容
     content = fetch_m3u_content(url)
     
-    # 2. 解析内容
-    entries = parse_m3u(content)
+    # 2. 解析内容（现在返回两个值：entries和first_line）
+    entries, first_line = parse_m3u(content)
     
     if not entries:
         print("❌ 错误：未解析到任何频道条目")
         sys.exit(1)
     
-    # 3. 处理条目
-    result_lines = process_entries(entries)
+    # 3. 处理条目（传入first_line参数）
+    result_lines = process_entries(entries, first_line)
     
     # 4. 保存输出
     output_file = save_output(result_lines)
@@ -281,16 +312,37 @@ def main():
     # 6. 显示一些示例
     print("\n🔍 CCTV频道排序示例:")
     cctv_examples = []
-    for line in result_lines[1:]:  # 跳过#EXTM3U头
+    for line in result_lines[1:]:  # 跳过文件头
         if len(cctv_examples) >= 10:
             break
         if 'tvg-id="CCTV' in line:
             tvg_id_match = re.search(r'tvg-id="([^"]*)"', line)
             if tvg_id_match:
-                cctv_examples.append(tvg_id_match.group(1))
+                # 获取频道名称
+                channel_name = ""
+                if ',' in line:
+                    channel_name = line.split(',')[-1].strip().split('\n')[0]
+                cctv_examples.append(f"{tvg_id_match.group(1)} ({channel_name})")
     
     if cctv_examples:
-        print("   " + " → ".join(cctv_examples[:10]))
+        print("   " + " → ".join(cctv_examples[:5]))
+    
+    # 7. 显示清理"高清"的效果
+    print("\n🧹 清理'高清'字样效果示例:")
+    hd_examples = []
+    for line in result_lines[1:15]:  # 检查前15个频道
+        if '高清' in line:
+            # 提取清理前后的对比
+            tvg_id_match = re.search(r'tvg-id="([^"]*)"', line)
+            if tvg_id_match and '高清' in tvg_id_match.group(1):
+                clean_id = clean_tvg_id(tvg_id_match.group(1))
+                hd_examples.append(f"{tvg_id_match.group(1)} → {clean_id}")
+    
+    if hd_examples:
+        for example in hd_examples[:3]:
+            print(f"   {example}")
+    else:
+        print("   未发现需要清理'高清'字样的频道")
     
     print("\n" + "="*60)
     print("✅ 脚本执行完成！")
