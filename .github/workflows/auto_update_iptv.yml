@@ -36,7 +36,7 @@ jobs:
         run: |
           python process_iptv.py
           echo "生成的CN.m3u内容预览："
-          head -30 ../CN.m3u
+          head -30 CN.m3u
       
       # 5. 检查文件是否有变化
       - name: Check for changes
