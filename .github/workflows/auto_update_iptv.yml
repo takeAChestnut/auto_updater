@@ -1,0 +1,70 @@
+# .github/workflows/auto_update_iptv.yml
+name: Auto Update IPTV List
+
+on:
+  schedule:
+    # 每天UTC时间2点运行（北京时间10点）
+    - cron: '0 2 * * *'
+  workflow_dispatch: # 允许手动触发
+  push:
+    paths:
+      - 'process_iptv.py'
+
+jobs:
+  update-iptv:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. 检出仓库
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      # 2. 设置Python环境
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      
+      # 3. 安装requests库
+      - name: Install dependencies
+        run: pip install requests
+      
+      # 4. 运行处理脚本
+      - name: Run IPTV processing script
+        run: |
+          cd scripts
+          python process_iptv.py
+          echo "生成的CN.m3u内容预览："
+          head -30 ../CN.m3u
+      
+      # 5. 检查文件是否有变化
+      - name: Check for changes
+        id: changes
+        run: |
+          git status
+          if git diff --quiet CN.m3u 2>/dev/null || [ ! -f CN.m3u ]; then
+            echo "没有检测到变化"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "检测到CN.m3u文件有更新"
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+      
+      # 6. 提交并推送更改（仅在文件有变化时）
+      - name: Commit and push changes
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "takeAChestnut"
+          git config user.email "1432726299@qq.com"
+          git add CN.m3u
+          git commit -m "🔄 自动更新IPTV列表 [$(date +'%Y-%m-%d %H:%M:%S')]"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      # 7. 没有变化时的通知
+      - name: No changes notification
+        if: steps.changes.outputs.has_changes == 'false'
+        run: echo "✅ CN.m3u文件无变化，跳过提交。"
