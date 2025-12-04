@@ -9,7 +9,7 @@ http://112.247.186.37:4022/rtp/239.253.254.191:8000
 http://112.247.186.37:4022/rtp/239.253.254.187:8000
 #EXTINF:-1 tvg-id="CCTV5" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV5.png" group-title="山东省威海市组播 山东联通",CCTV5
 http://112.247.186.37:4022/rtp/239.253.254.192:8000
-#EXTINF:-1 tvg-id="CCTV5+" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV5.png" group-title="山东省威海市组播 山东联通",CCTV5+
+#EXTINF:-1 tvg-id="CCTV5+" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV5+.png" group-title="山东省威海市组播 山东联通",CCTV5+
 http://112.247.186.37:4022/rtp/239.253.254.80:8000
 #EXTINF:-1 tvg-id="CCTV6" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV6.png" group-title="山东省威海市组播 山东联通",CCTV6
 http://112.247.186.37:4022/rtp/239.253.254.193:8000
