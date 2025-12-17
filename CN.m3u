@@ -1,137 +1,127 @@
 #EXTM3U x-tvg-url="https://fy.188766.xyz/e.xml" tvg-shift="0"
-#EXTINF:-1 tvg-id="CCTV1" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV1.png" group-title="湖南省岳阳市酒店 湖南联通",CCTV1
-http://110.52.232.230:8585/tsfile/live/1030_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="CCTV2" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV2.png" group-title="湖南省岳阳市酒店 湖南联通",CCTV2
-http://110.52.232.230:8585/tsfile/live/1001_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="CCTV3" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV3.png" group-title="湖南省岳阳市酒店 湖南联通",CCTV3
-http://110.52.232.230:8585/tsfile/live/1020_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="CCTV4" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV4.png" group-title="湖南省岳阳市酒店 湖南联通",CCTV4
-http://110.52.232.230:8585/tsfile/live/1032_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="CCTV5" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV5.png" group-title="湖南省岳阳市酒店 湖南联通",CCTV5
-http://110.52.232.230:8585/tsfile/live/1013_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="CCTV5+" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV5+.png" group-title="湖南省岳阳市酒店 湖南联通",CCTV5+
-http://110.52.232.230:8585/tsfile/live/1034_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="CCTV6" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV6.png" group-title="湖南省岳阳市酒店 湖南联通",CCTV6
-http://110.52.232.230:8585/tsfile/live/1021_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="CCTV7" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV7.png" group-title="湖南省岳阳市酒店 湖南联通",CCTV7
-http://110.52.232.230:8585/tsfile/live/1038_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="CCTV8" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV8.png" group-title="湖南省岳阳市酒店 湖南联通",CCTV8
-http://110.52.232.230:8585/tsfile/live/1023_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="CCTV9" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV9.png" group-title="湖南省岳阳市酒店 湖南联通",CCTV9
-http://110.52.232.230:8585/tsfile/live/1039_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="CCTV10" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV10.png" group-title="湖南省岳阳市酒店 湖南联通",CCTV10
-http://110.52.232.230:8585/tsfile/live/1002_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="CCTV11" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV11.png" group-title="湖南省岳阳市酒店 湖南联通",CCTV11
-http://110.52.232.230:8585/tsfile/live/1040_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="CCTV12" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV12.png" group-title="湖南省岳阳市酒店 湖南联通",CCTV12
-http://110.52.232.230:8585/tsfile/live/1042_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="CCTV13" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV13.png" group-title="湖南省岳阳市酒店 湖南联通",CCTV13
-http://110.52.232.230:8585/tsfile/live/1041_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="CCTV14" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV14.png" group-title="湖南省岳阳市酒店 湖南联通",CCTV14
-http://110.52.232.230:8585/tsfile/live/1046_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="CCTV15" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV15.png" group-title="湖南省岳阳市酒店 湖南联通",CCTV15
-http://110.52.232.230:8585/tsfile/live/1047_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="CCTV16" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV16.png" group-title="湖南省岳阳市酒店 湖南联通",CCTV16
-http://110.52.232.230:8585/tsfile/live/1025_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="CCTV17" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV17.png" group-title="湖南省岳阳市酒店 湖南联通",CCTV17
-http://110.52.232.230:8585/tsfile/live/1029_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="三沙卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/三沙卫视.png" group-title="湖南省岳阳市酒店 湖南联通",三沙卫视
-http://110.52.232.230:8585/tsfile/live/1012_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="新疆卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/新疆卫视.png" group-title="湖南省岳阳市酒店 湖南联通",新疆卫视
-http://110.52.232.230:8585/tsfile/live/0110_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="湖南卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/湖南卫视 高清.png" group-title="湖南省岳阳市酒店 湖南联通",湖南卫视
-http://110.52.232.230:8585/tsfile/live/1045_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="甘肃卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/甘肃卫视.png" group-title="湖南省岳阳市酒店 湖南联通",甘肃卫视
-http://110.52.232.230:8585/tsfile/live/0141_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="西藏卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/西藏卫视.png" group-title="湖南省岳阳市酒店 湖南联通",西藏卫视
-http://110.52.232.230:8585/tsfile/live/0111_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="青海卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/青海卫视.png" group-title="湖南省岳阳市酒店 湖南联通",青海卫视
-http://110.52.232.230:8585/tsfile/live/0140_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="东南卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/东南卫视..png" group-title="湖南省岳阳市酒店 湖南联通",东南卫视.
-http://110.52.232.230:8585/tsfile/live/1080_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="东方卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/东方卫视..png" group-title="湖南省岳阳市酒店 湖南联通",东方卫视.
-http://110.52.232.230:8585/tsfile/live/1068_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="中国国际" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/中国国际.png" group-title="湖南省岳阳市酒店 湖南联通",中国国际
-http://110.52.232.230:8585/tsfile/live/1035_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="中国教育." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/中国教育..png" group-title="湖南省岳阳市酒店 湖南联通",中国教育.
-http://110.52.232.230:8585/tsfile/live/1014_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="云南卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/云南卫视..png" group-title="湖南省岳阳市酒店 湖南联通",云南卫视.
-http://110.52.232.230:8585/tsfile/live/1055_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="优漫卡通." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/优漫卡通..png" group-title="湖南省岳阳市酒店 湖南联通",优漫卡通.
-http://110.52.232.230:8585/tsfile/live/1010_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="内蒙古卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/内蒙古卫视..png" group-title="湖南省岳阳市酒店 湖南联通",内蒙古卫视.
-http://110.52.232.230:8585/tsfile/live/1005_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="北京卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/北京卫视..png" group-title="湖南省岳阳市酒店 湖南联通",北京卫视.
-http://110.52.232.230:8585/tsfile/live/1058_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="卡酷动画." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/卡酷动画..png" group-title="湖南省岳阳市酒店 湖南联通",卡酷动画.
-http://110.52.232.230:8585/tsfile/live/1011_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="吉林卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/吉林卫视..png" group-title="湖南省岳阳市酒店 湖南联通",吉林卫视.
-http://110.52.232.230:8585/tsfile/live/1075_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="四川卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/四川卫视..png" group-title="湖南省岳阳市酒店 湖南联通",四川卫视.
-http://110.52.232.230:8585/tsfile/live/1073_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="四海钓鱼" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/四海钓鱼.png" group-title="湖南省岳阳市酒店 湖南联通",四海钓鱼
-http://110.52.232.230:8585/tsfile/live/1000_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="天津卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/天津卫视..png" group-title="湖南省岳阳市酒店 湖南联通",天津卫视.
-http://110.52.232.230:8585/tsfile/live/1067_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="宁夏卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/宁夏卫视..png" group-title="湖南省岳阳市酒店 湖南联通",宁夏卫视.
-http://110.52.232.230:8585/tsfile/live/1069_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="安徽卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/安徽卫视..png" group-title="湖南省岳阳市酒店 湖南联通",安徽卫视.
-http://110.52.232.230:8585/tsfile/live/1081_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="山东卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/山东卫视..png" group-title="湖南省岳阳市酒店 湖南联通",山东卫视.
-http://110.52.232.230:8585/tsfile/live/1065_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="山西卫视L" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/山西卫视L.png" group-title="湖南省岳阳市酒店 湖南联通",山西卫视L
-http://110.52.232.230:8585/tsfile/live/1070_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="广东卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广东卫视..png" group-title="湖南省岳阳市酒店 湖南联通",广东卫视.
-http://110.52.232.230:8585/tsfile/live/1027_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="广西卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广西卫视..png" group-title="湖南省岳阳市酒店 湖南联通",广西卫视.
-http://110.52.232.230:8585/tsfile/live/1076_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="快乐购" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/快乐购.png" group-title="湖南省岳阳市酒店 湖南联通",快乐购
-http://110.52.232.230:8585/tsfile/live/1031_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="江苏卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/江苏卫视..png" group-title="湖南省岳阳市酒店 湖南联通",江苏卫视.
-http://110.52.232.230:8585/tsfile/live/1048_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="江西卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/江西卫视..png" group-title="湖南省岳阳市酒店 湖南联通",江西卫视.
-http://110.52.232.230:8585/tsfile/live/1072_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="河北卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/河北卫视..png" group-title="湖南省岳阳市酒店 湖南联通",河北卫视.
-http://110.52.232.230:8585/tsfile/live/1062_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="河南卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/河南卫视..png" group-title="湖南省岳阳市酒店 湖南联通",河南卫视.
-http://110.52.232.230:8585/tsfile/live/1074_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="测试3" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/测试3.png" group-title="湖南省岳阳市酒店 湖南联通",测试3
-http://110.52.232.230:8585/tsfile/live/0113_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="浙江卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/浙江卫视..png" group-title="湖南省岳阳市酒店 湖南联通",浙江卫视.
-http://110.52.232.230:8585/tsfile/live/1056_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="深圳卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/深圳卫视..png" group-title="湖南省岳阳市酒店 湖南联通",深圳卫视.
-http://110.52.232.230:8585/tsfile/live/1061_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="湖北卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/湖北卫视..png" group-title="湖南省岳阳市酒店 湖南联通",湖北卫视.
-http://110.52.232.230:8585/tsfile/live/1064_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="湖南国际HD." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/湖南国际HD..png" group-title="湖南省岳阳市酒店 湖南联通",湖南国际HD.
-http://110.52.232.230:8585/tsfile/live/1009_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="湖南娱乐" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/湖南娱乐.png" group-title="湖南省岳阳市酒店 湖南联通",湖南娱乐
-http://110.52.232.230:8585/tsfile/live/1054_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="湖南教育." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/湖南教育..png" group-title="湖南省岳阳市酒店 湖南联通",湖南教育.
-http://110.52.232.230:8585/tsfile/live/1007_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="湖南电影" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/湖南电影.png" group-title="湖南省岳阳市酒店 湖南联通",湖南电影
-http://110.52.232.230:8585/tsfile/live/1051_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="湖南电视剧" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/湖南电视剧.png" group-title="湖南省岳阳市酒店 湖南联通",湖南电视剧
-http://110.52.232.230:8585/tsfile/live/1050_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="湖南石化" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/湖南石化.png" group-title="湖南省岳阳市酒店 湖南联通",湖南石化
-http://110.52.232.230:8585/tsfile/live/1036_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="湖南经视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/湖南经视..png" group-title="湖南省岳阳市酒店 湖南联通",湖南经视.
-http://110.52.232.230:8585/tsfile/live/1006_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="湖南都市" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/湖南都市.png" group-title="湖南省岳阳市酒店 湖南联通",湖南都市
-http://110.52.232.230:8585/tsfile/live/1052_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="爱晚（原湖南公共）" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/爱晚（原湖南公共）.png" group-title="湖南省岳阳市酒店 湖南联通",爱晚（原湖南公共）
-http://110.52.232.230:8585/tsfile/live/1049_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="贵州卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/贵州卫视..png" group-title="湖南省岳阳市酒店 湖南联通",贵州卫视.
-http://110.52.232.230:8585/tsfile/live/1063_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="辽宁卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/辽宁卫视..png" group-title="湖南省岳阳市酒店 湖南联通",辽宁卫视.
-http://110.52.232.230:8585/tsfile/live/1033_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="重庆卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/重庆卫视..png" group-title="湖南省岳阳市酒店 湖南联通",重庆卫视.
-http://110.52.232.230:8585/tsfile/live/1071_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="金鹰卡通." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/金鹰卡通..png" group-title="湖南省岳阳市酒店 湖南联通",金鹰卡通.
-http://110.52.232.230:8585/tsfile/live/1008_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="金鹰纪实." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/金鹰纪实..png" group-title="湖南省岳阳市酒店 湖南联通",金鹰纪实.
-http://110.52.232.230:8585/tsfile/live/1004_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="陕西卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/陕西卫视..png" group-title="湖南省岳阳市酒店 湖南联通",陕西卫视.
-http://110.52.232.230:8585/tsfile/live/1057_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
-#EXTINF:-1 tvg-id="黑龙江卫视." tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/黑龙江卫视..png" group-title="湖南省岳阳市酒店 湖南联通",黑龙江卫视.
-http://110.52.232.230:8585/tsfile/live/1003_1.m3u8?key=txiptv&amp;playlive=1&amp;authid=0
+#EXTINF:-1 tvg-id="CCTV1" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV1.png" group-title="广东省深圳市福田区酒店 广东联通",CCTV1
+http://27.46.125.183:808/hls/1/index.m3u8
+#EXTINF:-1 tvg-id="CCTV2" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV2.png" group-title="广东省深圳市福田区酒店 广东联通",CCTV2
+http://27.46.125.183:808/hls/2/index.m3u8
+#EXTINF:-1 tvg-id="CCTV3" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV3.png" group-title="广东省深圳市福田区酒店 广东联通",CCTV3
+http://27.46.125.183:808/hls/3/index.m3u8
+#EXTINF:-1 tvg-id="CCTV4" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV4.png" group-title="广东省深圳市福田区酒店 广东联通",CCTV4
+http://27.46.125.183:808/hls/4/index.m3u8
+#EXTINF:-1 tvg-id="CCTV5+" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV5+.png" group-title="广东省深圳市福田区酒店 广东联通",CCTV5+
+http://27.46.125.183:808/hls/16/index.m3u8
+#EXTINF:-1 tvg-id="CCTV6" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV6.png" group-title="广东省深圳市福田区酒店 广东联通",CCTV6
+http://27.46.125.183:808/hls/6/index.m3u8
+#EXTINF:-1 tvg-id="CCTV7" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV7.png" group-title="广东省深圳市福田区酒店 广东联通",CCTV7
+http://27.46.125.183:808/hls/7/index.m3u8
+#EXTINF:-1 tvg-id="CCTV8" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV8.png" group-title="广东省深圳市福田区酒店 广东联通",CCTV8
+http://27.46.125.183:808/hls/8/index.m3u8
+#EXTINF:-1 tvg-id="CCTV9" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV9.png" group-title="广东省深圳市福田区酒店 广东联通",CCTV9
+http://27.46.125.183:808/hls/9/index.m3u8
+#EXTINF:-1 tvg-id="CCTV10" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV10.png" group-title="广东省深圳市福田区酒店 广东联通",CCTV10
+http://27.46.125.183:808/hls/10/index.m3u8
+#EXTINF:-1 tvg-id="CCTV11" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV11.png" group-title="广东省深圳市福田区酒店 广东联通",CCTV11
+http://27.46.125.183:808/hls/11/index.m3u8
+#EXTINF:-1 tvg-id="CCTV12" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV12.png" group-title="广东省深圳市福田区酒店 广东联通",CCTV12
+http://27.46.125.183:808/hls/12/index.m3u8
+#EXTINF:-1 tvg-id="CCTV13" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV13.png" group-title="广东省深圳市福田区酒店 广东联通",CCTV13
+http://27.46.125.183:808/hls/13/index.m3u8
+#EXTINF:-1 tvg-id="CCTV14" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV14.png" group-title="广东省深圳市福田区酒店 广东联通",CCTV14
+http://27.46.125.183:808/hls/14/index.m3u8
+#EXTINF:-1 tvg-id="CCTV15" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCTV15.png" group-title="广东省深圳市福田区酒店 广东联通",CCTV15
+http://27.46.125.183:808/hls/15/index.m3u8
+#EXTINF:-1 tvg-id="东南卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/东南卫视.png" group-title="广东省深圳市福田区酒店 广东联通",东南卫视
+http://27.46.125.183:808/hls/49/index.m3u8
+#EXTINF:-1 tvg-id="东方卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/东方卫视.png" group-title="广东省深圳市福田区酒店 广东联通",东方卫视
+http://27.46.125.183:808/hls/34/index.m3u8
+#EXTINF:-1 tvg-id="云南卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/云南卫视.png" group-title="广东省深圳市福田区酒店 广东联通",云南卫视
+http://27.46.125.183:808/hls/46/index.m3u8
+#EXTINF:-1 tvg-id="北京卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/北京卫视.png" group-title="广东省深圳市福田区酒店 广东联通",北京卫视
+http://27.46.125.183:808/hls/36/index.m3u8
+#EXTINF:-1 tvg-id="厦门卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/厦门卫视.png" group-title="广东省深圳市福田区酒店 广东联通",厦门卫视
+http://27.46.125.183:808/hls/54/index.m3u8
+#EXTINF:-1 tvg-id="吉林卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/吉林卫视.png" group-title="广东省深圳市福田区酒店 广东联通",吉林卫视
+http://27.46.125.183:808/hls/51/index.m3u8
+#EXTINF:-1 tvg-id="四川卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/四川卫视.png" group-title="广东省深圳市福田区酒店 广东联通",四川卫视
+http://27.46.125.183:808/hls/44/index.m3u8
+#EXTINF:-1 tvg-id="天津卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/天津卫视.png" group-title="广东省深圳市福田区酒店 广东联通",天津卫视
+http://27.46.125.183:808/hls/37/index.m3u8
+#EXTINF:-1 tvg-id="安徽卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/安徽卫视.png" group-title="广东省深圳市福田区酒店 广东联通",安徽卫视
+http://27.46.125.183:808/hls/35/index.m3u8
+#EXTINF:-1 tvg-id="山东卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/山东卫视.png" group-title="广东省深圳市福田区酒店 广东联通",山东卫视
+http://27.46.125.183:808/hls/38/index.m3u8
+#EXTINF:-1 tvg-id="山西卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/山西卫视.png" group-title="广东省深圳市福田区酒店 广东联通",山西卫视
+http://27.46.125.183:808/hls/53/index.m3u8
+#EXTINF:-1 tvg-id="广东卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广东卫视.png" group-title="广东省深圳市福田区酒店 广东联通",广东卫视
+http://27.46.125.183:808/hls/19/index.m3u8
+#EXTINF:-1 tvg-id="广西卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广西卫视.png" group-title="广东省深圳市福田区酒店 广东联通",广西卫视
+http://27.46.125.183:808/hls/50/index.m3u8
+#EXTINF:-1 tvg-id="新疆卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/新疆卫视.png" group-title="广东省深圳市福田区酒店 广东联通",新疆卫视
+http://27.46.125.183:808/hls/60/index.m3u8
+#EXTINF:-1 tvg-id="江苏卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/江苏卫视.png" group-title="广东省深圳市福田区酒店 广东联通",江苏卫视
+http://27.46.125.183:808/hls/32/index.m3u8
+#EXTINF:-1 tvg-id="江西卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/江西卫视.png" group-title="广东省深圳市福田区酒店 广东联通",江西卫视
+http://27.46.125.183:808/hls/39/index.m3u8
+#EXTINF:-1 tvg-id="河北卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/河北卫视.png" group-title="广东省深圳市福田区酒店 广东联通",河北卫视
+http://27.46.125.183:808/hls/48/index.m3u8
+#EXTINF:-1 tvg-id="河南卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/河南卫视.png" group-title="广东省深圳市福田区酒店 广东联通",河南卫视
+http://27.46.125.183:808/hls/45/index.m3u8
+#EXTINF:-1 tvg-id="浙江卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/浙江卫视.png" group-title="广东省深圳市福田区酒店 广东联通",浙江卫视
+http://27.46.125.183:808/hls/31/index.m3u8
+#EXTINF:-1 tvg-id="海南卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/海南卫视.png" group-title="广东省深圳市福田区酒店 广东联通",海南卫视
+http://27.46.125.183:808/hls/57/index.m3u8
+#EXTINF:-1 tvg-id="深圳卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/深圳卫视.png" group-title="广东省深圳市福田区酒店 广东联通",深圳卫视
+http://27.46.125.183:808/hls/33/index.m3u8
+#EXTINF:-1 tvg-id="湖北卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/湖北卫视.png" group-title="广东省深圳市福田区酒店 广东联通",湖北卫视
+http://27.46.125.183:808/hls/40/index.m3u8
+#EXTINF:-1 tvg-id="湖南卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/湖南卫视.png" group-title="广东省深圳市福田区酒店 广东联通",湖南卫视
+http://27.46.125.183:808/hls/30/index.m3u8
+#EXTINF:-1 tvg-id="甘肃卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/甘肃卫视.png" group-title="广东省深圳市福田区酒店 广东联通",甘肃卫视
+http://27.46.125.183:808/hls/61/index.m3u8
+#EXTINF:-1 tvg-id="西藏卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/西藏卫视.png" group-title="广东省深圳市福田区酒店 广东联通",西藏卫视
+http://27.46.125.183:808/hls/59/index.m3u8
+#EXTINF:-1 tvg-id="贵州卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/贵州卫视.png" group-title="广东省深圳市福田区酒店 广东联通",贵州卫视
+http://27.46.125.183:808/hls/43/index.m3u8
+#EXTINF:-1 tvg-id="重庆卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/重庆卫视.png" group-title="广东省深圳市福田区酒店 广东联通",重庆卫视
+http://27.46.125.183:808/hls/47/index.m3u8
+#EXTINF:-1 tvg-id="陕西卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/陕西卫视.png" group-title="广东省深圳市福田区酒店 广东联通",陕西卫视
+http://27.46.125.183:808/hls/52/index.m3u8
+#EXTINF:-1 tvg-id="黑龙江卫视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/黑龙江卫视.png" group-title="广东省深圳市福田区酒店 广东联通",黑龙江卫视
+http://27.46.125.183:808/hls/42/index.m3u8
+#EXTINF:-1 tvg-id="CCVT5" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CCVT5.png" group-title="广东省深圳市福田区酒店 广东联通",CCVT5
+http://27.46.125.183:808/hls/5/index.m3u8
+#EXTINF:-1 tvg-id="CETV1" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CETV1.png" group-title="广东省深圳市福田区酒店 广东联通",CETV1
+http://27.46.125.183:808/hls/67/index.m3u8
+#EXTINF:-1 tvg-id="CGTN" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/CGTN.png" group-title="广东省深圳市福田区酒店 广东联通",CGTN
+http://27.46.125.183:808/hls/69/index.m3u8
+#EXTINF:-1 tvg-id="IPTV6+" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/IPTV6+.png" group-title="广东省深圳市福田区酒店 广东联通",IPTV6+
+http://27.46.125.183:808/hls/17/index.m3u8
+#EXTINF:-1 tvg-id="IPTV8+" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/IPTV8+.png" group-title="广东省深圳市福田区酒店 广东联通",IPTV8+
+http://27.46.125.183:808/hls/18/index.m3u8
+#EXTINF:-1 tvg-id="IPTV少儿动画" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/IPTV少儿动画.png" group-title="广东省深圳市福田区酒店 广东联通",IPTV少儿动画
+http://27.46.125.183:808/hls/72/index.m3u8
+#EXTINF:-1 tvg-id="IPTV经典电影" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/IPTV经典电影.png" group-title="广东省深圳市福田区酒店 广东联通",IPTV经典电影
+http://27.46.125.183:808/hls/71/index.m3u8
+#EXTINF:-1 tvg-id="IPTV谍战剧场" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/IPTV谍战剧场.png" group-title="广东省深圳市福田区酒店 广东联通",IPTV谍战剧场
+http://27.46.125.183:808/hls/70/index.m3u8
+#EXTINF:-1 tvg-id="SDETV" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/SDETV.png" group-title="广东省深圳市福田区酒店 广东联通",SDETV
+http://27.46.125.183:808/hls/68/index.m3u8
+#EXTINF:-1 tvg-id="嘉佳卡通" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/嘉佳卡通.png" group-title="广东省深圳市福田区酒店 广东联通",嘉佳卡通
+http://27.46.125.183:808/hls/66/index.m3u8
+#EXTINF:-1 tvg-id="广东体育" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广东体育.png" group-title="广东省深圳市福田区酒店 广东联通",广东体育
+http://27.46.125.183:808/hls/28/index.m3u8
+#EXTINF:-1 tvg-id="广东公共" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广东公共.png" group-title="广东省深圳市福田区酒店 广东联通",广东公共
+http://27.46.125.183:808/hls/22/index.m3u8
+#EXTINF:-1 tvg-id="广东国际" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广东国际.png" group-title="广东省深圳市福田区酒店 广东联通",广东国际
+http://27.46.125.183:808/hls/23/index.m3u8
+#EXTINF:-1 tvg-id="广东少儿" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广东少儿.png" group-title="广东省深圳市福田区酒店 广东联通",广东少儿
+http://27.46.125.183:808/hls/27/index.m3u8
+#EXTINF:-1 tvg-id="广东影视" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广东影视.png" group-title="广东省深圳市福田区酒店 广东联通",广东影视
+http://27.46.125.183:808/hls/26/index.m3u8
+#EXTINF:-1 tvg-id="广东新闻" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广东新闻.png" group-title="广东省深圳市福田区酒店 广东联通",广东新闻
+http://27.46.125.183:808/hls/21/index.m3u8
+#EXTINF:-1 tvg-id="广东珠江" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/广东珠江.png" group-title="广东省深圳市福田区酒店 广东联通",广东珠江
+http://27.46.125.183:808/hls/20/index.m3u8
+#EXTINF:-1 tvg-id="炫动卡通" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/炫动卡通.png" group-title="广东省深圳市福田区酒店 广东联通",炫动卡通
+http://27.46.125.183:808/hls/65/index.m3u8
+#EXTINF:-1 tvg-id="金鹰卡通" tvg-logo="https://gcore.jsdelivr.net/gh/taksssss/tv/icon/金鹰卡通.png" group-title="广东省深圳市福田区酒店 广东联通",金鹰卡通
+http://27.46.125.183:808/hls/64/index.m3u8
