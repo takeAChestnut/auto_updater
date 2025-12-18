@@ -112,45 +112,92 @@ def parse_m3u(content: str) -> List[Tuple[str, Dict, str, str]]:
     print(f"📊 解析出 {channel_count} 个频道条目")
     return entries, first_line  # 现在返回两个值：条目和第一行
 
-def clean_tvg_id(tvg_id: str) -> str:
-    """清理tvg-id：去除'高清'字样并标准化"""
-    if not tvg_id:
-        return tvg_id
-    
-    original_tvg_id = tvg_id
-    
-    # 首先去除"高清"字样
-    cleaned = tvg_id.replace("高清", "")
-    
-    # 特殊处理CCTV频道：规范命名方式
-    # 匹配CCTV+数字+可选后缀（如+、体育、新闻等）
-    cctv_match = re.match(r'^CCTV[-\s]?(\d+)(.*)$', cleaned, re.IGNORECASE)
-    if cctv_match:
-        num = cctv_match.group(1)
-        suffix = cctv_match.group(2).strip()
-        
-        # 特殊处理：保留+号后缀（如CCTV-5+）
-        if suffix == '+' or suffix == '＋':
-            cleaned = f"CCTV{num}+"
-        elif suffix:
-            # 对于其他后缀（如"高清"、"体育"等），移除连字符，直接拼接
-            # 但保留特定的频道标识
-            special_suffixes = ['新闻', '体育', '电影', '少儿', '音乐', '戏曲', '农业', '科教']
-            if any(suffix.startswith(s) for s in special_suffixes):
-                cleaned = f"CCTV{num}{suffix}"
+def clean_cctv_name(name: str, name_type: str = "tvg_id") -> str:
+    """
+    统一清理CCTV相关名称（tvg-id, logo文件名, 频道名称）
+    处理规则：
+    1. 移除"高清"字样
+    2. 标准化命名，明确区分三种情况：
+       - 情况A: 明确包含"+"的频道 -> 格式：CCTV5+
+       - 情况B: 含有特定后缀（如"体育"）的频道 -> 格式：CCTV5-体育
+       - 情况C: 普通数字频道 -> 格式：CCTV5
+    3. 保留特定后缀：新闻、体育、综艺、电影、少儿、音乐、戏曲、农业、科教
+    4. 移除不需要的后缀：综合、HD、UHD、标清等
+    """
+    if not name:
+        return name
+
+    original_name = name
+
+    # 1. 移除"高清"字样
+    cleaned = name.replace("高清", "")
+
+    # 2. 处理CCTV频道
+    if 'CCTV' in cleaned.upper():
+        # 支持格式：CCTV-5, CCTV5, CCTV-5+, CCTV5+, CCTV-5体育, CCTV5-体育
+        cctv_match = re.match(r'^(CCTV)[-\s]?(\d+)(.*)$', cleaned, re.IGNORECASE)
+        if cctv_match:
+            prefix, num, suffix = cctv_match.groups()
+            suffix = suffix.strip()
+
+            # 需要保留的特定后缀列表
+            preserve_suffixes = ['新闻', '体育', '综艺', '电影', '少儿', '音乐', '戏曲', '农业', '科教']
+
+            # 情况A: 判断是否为“+”频道 (明确包含+或＋)
+            if suffix.endswith('+') or suffix.endswith('＋'):
+                # 这是明确的CCTV5+频道
+                cleaned = f"CCTV{num}+"
             else:
-                cleaned = f"CCTV{num}"
-        else:
-            cleaned = f"CCTV{num}"
+                # 情况B & C: 检查是否有需要保留的特定后缀
+                preserved_suffix = ""
+                for ps in preserve_suffixes:
+                    # 检查后缀是否以特定词结尾，或包含“-特定词”的模式
+                    if suffix.endswith(ps) or f"-{ps}" in suffix:
+                        preserved_suffix = ps
+                        break
+
+                if preserved_suffix:
+                    # 情况B: 有特定后缀，格式为 CCTV5-体育
+                    cleaned = f"CCTV{num}-{preserved_suffix}"
+                else:
+                    # 情况C: 普通CCTV数字频道，无特定后缀
+                    # 需要移除可能残留的通用后缀（如“综合”、“HD”等）
+                    remove_suffixes = ['-综合', '综合', 'HD', 'UHD', 'FHD', '超清', '标清', ' ']
+                    temp_suffix = suffix
+                    for rs in remove_suffixes:
+                        temp_suffix = temp_suffix.replace(rs, "")
+                    
+                    # 如果清理后suffix还不为空，说明有未处理的杂项，暂时忽略（或可根据需要处理）
+                    # 此处主要确保基础格式正确
+                    cleaned = f"CCTV{num}"
+
+    # 对于logo处理，确保是有效的文件名
+    if name_type == "logo" and cleaned != original_name:
+        cleaned = re.sub(r'[<>:"/\\|?*]', '', cleaned)
+
+    # 打印变化日志
+    if original_name != cleaned:
+        print(f"    {name_type}清理: {original_name} → {cleaned}")
+
+    return cleaned
+
+def clean_tvg_id(tvg_id: str) -> str:
+    """清理tvg-id：先纠正拼写错误，再使用统一的CCTV清理方法"""
+    # 1. 首先纠正常见的拼写错误
+    original_id = tvg_id
+    corrected_id = tvg_id
     
-    # 打印清理日志
-    if original_tvg_id != cleaned:
-        print(f"    tvg-id清理: {original_tvg_id} → {cleaned}")
+    # 纠正 CCVT -> CCTV (V和T颠倒)
+    if 'CCVT' in corrected_id.upper():
+        corrected_id = corrected_id.upper().replace('CCVT', 'CCTV')
+        if original_id != corrected_id:
+            print(f"    tvg-id拼写纠正: {original_id} → {corrected_id}")
     
-    return cleaned.strip()
+    # 2. 使用统一的CCTV清理方法处理纠正后的ID
+    return clean_cctv_name(corrected_id, "tvg_id")
 
 def clean_logo_url(logo_url: str, tvg_id: str = "") -> str:
-    """清理logo URL，标准化CCTV命名"""
+    """清理logo URL，使用统一的CCTV命名方法"""
     if not logo_url:
         return logo_url
     
@@ -170,93 +217,39 @@ def clean_logo_url(logo_url: str, tvg_id: str = "") -> str:
         dirname, filename = os.path.split(decoded_path)
         basename, ext = os.path.splitext(filename)
         
-        # 处理CCTV logo文件名
-        if 'CCTV' in basename.upper():
-            # 先清理常见的垃圾后缀
-            suffix_to_remove = ['高清', 'HD', '超清', 'UHD', '标清', '综合', '综合频道']
-            
-            # 根据tvg_id决定正确的文件名
-            if tvg_id:
-                # 如果tvg_id以+结尾，那么logo文件名也应该以+结尾
-                if tvg_id.endswith('+') or tvg_id.endswith('＋'):
-                    # 匹配CCTV数字部分
-                    num_match = re.search(r'CCTV(\d+)', tvg_id)
-                    if num_match:
-                        num = num_match.group(1)
-                        new_basename = f"CCTV{num}+"
-                    else:
-                        # 回退到原来的逻辑
-                        cctv_match = re.match(r'^(CCTV)[-\s]?(\d+)(.*)$', basename, re.IGNORECASE)
-                        if cctv_match:
-                            prefix, num, suffix = cctv_match.groups()
-                            # 清理后缀
-                            cleaned_suffix = suffix
-                            for remove_str in suffix_to_remove:
-                                if cleaned_suffix.endswith(remove_str):
-                                    cleaned_suffix = cleaned_suffix[:-len(remove_str)]
-                            # 确保有+号
-                            if not cleaned_suffix.endswith('+'):
-                                cleaned_suffix = '+'
-                            new_basename = f"CCTV{num}{cleaned_suffix}"
-                        else:
-                            return logo_url
-                else:
-                    # 对于普通CCTV频道，使用tvg_id作为文件名基础
-                    new_basename = tvg_id.replace('CCTV-', 'CCTV')
-            else:
-                # 如果没有tvg_id，使用原来的逻辑
-                cctv_match = re.match(r'^(CCTV)[-\s]?(\d+)(.*)$', basename, re.IGNORECASE)
-                if cctv_match:
-                    prefix, num, suffix = cctv_match.groups()
-                    
-                    # 清理后缀
-                    cleaned_suffix = suffix
-                    for remove_str in suffix_to_remove:
-                        if cleaned_suffix.endswith(remove_str):
-                            cleaned_suffix = cleaned_suffix[:-len(remove_str)]
-                    
-                    # 检查原始后缀是否有+号
-                    if '+' in suffix or '＋' in suffix:
-                        if not cleaned_suffix.endswith('+'):
-                            cleaned_suffix = '+'
-                    
-                    # 构建新的文件名
-                    if cleaned_suffix:
-                        new_basename = f"CCTV{num}{cleaned_suffix}"
-                    else:
-                        new_basename = f"CCTV{num}"
-                else:
-                    return logo_url
-            
-            # 重建路径
-            new_filename = new_basename + ext
-            new_path = os.path.join(dirname, new_filename)
-            
-            # 重新编码路径
-            encoded_path = new_path.replace('\\', '/')
-            
-            # 重建完整URL
-            cleaned_logo = parsed_url._replace(path=encoded_path).geturl()
-            
-            # 打印清理日志
-            if original_logo != cleaned_logo:
-                original_name = original_logo.split('/')[-1]
-                cleaned_name = cleaned_logo.split('/')[-1]
-                print(f"    logo清理: {original_name} → {cleaned_name}")
-            
-            return cleaned_logo
+        # 使用统一的CCTV清理方法处理文件名
+        clean_basename = clean_cctv_name(basename, "logo")
+        
+        # 如果提供了tvg_id，优先使用tvg_id的命名
+        if tvg_id and 'CCTV' in tvg_id.upper():
+            # 从tvg_id提取干净的频道名（去除tvg-id=）
+            clean_from_tvg = clean_cctv_name(tvg_id, "logo")
+            if clean_from_tvg and clean_from_tvg != clean_basename:
+                print(f"    根据tvg-id({tvg_id})更新logo名: {clean_basename} → {clean_from_tvg}")
+                clean_basename = clean_from_tvg
+        
+        # 重建路径
+        new_filename = clean_basename + ext
+        new_path = os.path.join(dirname, new_filename)
+        
+        # 重新编码路径
+        encoded_path = new_path.replace('\\', '/')
+        
+        # 重建完整URL
+        cleaned_logo = parsed_url._replace(path=encoded_path).geturl()
+        
+        return cleaned_logo
     
     except Exception as e:
         print(f"    logo清理错误({logo_url}): {e}")
-    
-    return logo_url
+        return logo_url
 
 def extract_cctv_number(tvg_id: str) -> int:
-    """从CCTV频道ID中提取数字用于排序"""
+    """从CCTV频道ID中提取数字用于排序，处理CCTV5+等特殊情况"""
     if not tvg_id.startswith('CCTV'):
         return 9999  # 非CCTV频道返回大数，排后面
     
-    # 匹配CCTV后的数字
+    # 匹配CCTV后的数字（支持CCTV5、CCTV5+、CCTV5-体育等格式）
     match = re.search(r'CCTV[-\s]?(\d+)', tvg_id)
     if match:
         try:
@@ -264,77 +257,12 @@ def extract_cctv_number(tvg_id: str) -> int:
         except ValueError:
             pass
     
-    # 如果没有数字（如CCTV-新闻），返回一个大数使其排在数字频道后面
-    return 9998
+    # 如果没有数字（如CCTV-新闻），返回0使其排在数字频道前面
+    return 0
 
 def process_entries(entries: List[Tuple[str, Dict, str]], first_line: str = "") -> List[str]:
-    """处理条目：去重、清理、排序"""
+    """处理条目：清理、去重、排序"""
     print("🔄 开始处理频道列表...")
-    
-    def clean_channel_name(channel_name: str) -> str:
-        """
-        清理频道名称，规则：
-        1. 特别处理CCTV频道：将"CCTV1"格式规范化为"CCTV-1"，但保留后续节目名/特性
-        2. 去除结尾的通用质量后缀
-        3. 保留特性标识如"4K"、"8K"等
-        """
-        if not channel_name:
-            return channel_name
-
-        original_name = channel_name
-
-        # === 规则1：规范CCTV数字格式（保留后续节目名/特性）===
-        # 匹配 "CCTV" + 数字 + 任意后续内容
-        cctv_match = re.match(r'^(CCTV)[-\s]?(\d+)(.*)$', channel_name, re.IGNORECASE)
-        if cctv_match:
-            prefix, number, suffix = cctv_match.groups()
-            
-            # 保留的特定特性后缀列表
-            preserved_suffixes = ['+', '＋', '4K', '8K', 'K', '新闻', '体育', '电影', '少儿', '音乐', '戏曲', '农业', '科教']
-            
-            # 检查后缀是否为需要保留的特性
-            should_preserve_suffix = False
-            preserved_part = ""
-            
-            for preserve_suffix in preserved_suffixes:
-                if suffix.strip().startswith(preserve_suffix):
-                    should_preserve_suffix = True
-                    preserved_part = suffix.strip()
-                    break
-            
-            # 构建规范化名称
-            if should_preserve_suffix:
-                channel_name = f"CCTV{number}{preserved_part}"
-            else:
-                # 普通CCTV频道，只保留数字部分
-                channel_name = f"CCTV{number}"
-
-        # === 规则2：去除结尾的通用质量后缀（但不删除特性标识）===
-        # 只去除纯粹的质量后缀，不删除作为频道标识一部分的
-        generic_suffixes = ['高清', '超清', 'HD', 'FHD', 'UHD', '标清', '综合']
-        
-        # 特殊处理：如果已经是CCTV-4K格式，不要删除K
-        if not re.match(r'^CCTV\d+[48]?K$', channel_name):
-            for suffix in generic_suffixes:
-                # 检查是否是独立后缀（前面有空格或连字符）
-                if channel_name.endswith(suffix):
-                    # 确保不是特性标识的一部分
-                    if not (suffix == 'HD' and 'CCTV' in channel_name and '新闻' in channel_name):
-                        channel_name = channel_name[:-len(suffix)].strip()
-                elif channel_name.endswith(f'-{suffix}'):
-                    channel_name = channel_name[:-len(suffix)-1].strip()
-                elif channel_name.endswith(f' {suffix}'):
-                    channel_name = channel_name[:-len(suffix)-1].strip()
-
-        # === 规则3：清理多余的连字符和空格 ===
-        channel_name = re.sub(r'\s+', ' ', channel_name).strip()
-        channel_name = re.sub(r'-+', '-', channel_name)
-        
-        # 打印变化日志
-        if original_name != channel_name:
-            print(f"    频道名称标准化: {original_name} → {channel_name}")
-        
-        return channel_name
     
     # 1. 清理tvg-id并构建新条目（同时清理频道名称）
     processed = []
@@ -342,18 +270,28 @@ def process_entries(entries: List[Tuple[str, Dict, str]], first_line: str = "") 
         # 清理tvg-id
         clean_id = clean_tvg_id(tvg_id)
         
-        # 清理频道名称
+        # 清理频道名称（使用统一的CCTV清理方法）
         if attrs['channel_name']:
-            clean_name = clean_channel_name(attrs['channel_name'])
+            # 先对频道名进行拼写纠正，再清理
+            channel_name = attrs['channel_name']
+            # 纠正 CCVT -> CCTV (V和T颠倒) - 应用与tvg-id相同的规则
+            if 'CCVT' in channel_name.upper():
+                corrected_name = channel_name.upper().replace('CCVT', 'CCTV')
+                if channel_name != corrected_name:
+                    print(f"    频道名拼写纠正: {channel_name} → {corrected_name}")
+                clean_name = clean_cctv_name(corrected_name, "channel_name")
+            else:
+                clean_name = clean_cctv_name(attrs['channel_name'], "channel_name")
         else:
             clean_name = ""
         
-        # 清理tvg-logo：移除"高清"字样并更新CCTV命名
+        # 清理tvg-logo：使用统一的CCTV命名方法
         clean_logo = clean_logo_url(attrs['tvg-logo'], clean_id)
         
         # 清理group-title：移除"高清"字样
         clean_group = attrs['group-title']
         if clean_group:
+            # group-title不需要特殊处理，只移除高清字样
             clean_group = clean_group.replace("高清", "")
         
         # 构建新的频道行
@@ -385,20 +323,24 @@ def process_entries(entries: List[Tuple[str, Dict, str]], first_line: str = "") 
         print(f"🔄 去重操作：移除了 {duplicate_count} 个重复频道")
     print(f"📊 去重后剩余 {len(unique_dict)} 个唯一频道")
     
-    # 3. 排序（修复CCTV数字排序问题）
+    # 3. 排序（修复排序问题，确保所有CCTV排在卫视前面）
     def sort_key(item):
         tvg_id, _ = item
         
-        # 第一优先级：CCTV开头
+        # 第一优先级：分类权重
+        if tvg_id.startswith('CCTV'):
+            category_weight = 0  # CCTV权重最高
+        elif tvg_id.endswith('卫视') or tvg_id.endswith('卫視'):
+            category_weight = 1  # 卫视其次
+        else:
+            category_weight = 2  # 其他最后
+        
+        # 第二优先级：CCTV频道按数字排序
         if tvg_id.startswith('CCTV'):
             num = extract_cctv_number(tvg_id)
-            return (0, num, tvg_id)
-        # 第二优先级：以"卫视"结尾
-        elif tvg_id.endswith('卫视'):
-            return (1, tvg_id)
-        # 第三优先级：其他
+            return (category_weight, num, tvg_id)
         else:
-            return (2, tvg_id)
+            return (category_weight, tvg_id)
     
     sorted_items = sorted(unique_dict.items(), key=sort_key)
     
@@ -513,61 +455,51 @@ def main():
     # 5. 预览结果
     preview_results(result_lines)
     
-    # 6. 显示一些示例
-    print("\n🔍 特殊频道处理示例:")
+    # 6. 显示特殊频道处理示例
+    print("\n🔍 特殊CCTV频道处理示例:")
     special_examples = []
-    for line in result_lines[1:]:  # 跳过文件头
-        if len(special_examples) >= 10:
-            break
-        if 'tvg-id="CCTV' in line and ('+' in line or '＋' in line):
+    
+    # 查找有特定后缀的CCTV频道
+    special_suffixes = ['综艺', '新闻', '体育', '电影', '少儿', '音乐', '戏曲', '农业', '科教', '+']
+    
+    for line in result_lines[1:30]:  # 检查前30个频道
+        if 'tvg-id="CCTV' in line:
             tvg_id_match = re.search(r'tvg-id="([^"]*)"', line)
             if tvg_id_match:
-                # 获取频道名称
-                channel_name = ""
-                if ',' in line:
-                    channel_name = line.split(',')[-1].strip().split('\n')[0]
+                tvg_id = tvg_id_match.group(1)
                 
-                # 获取logo
-                logo_match = re.search(r'tvg-logo="([^"]*)"', line)
-                logo = logo_match.group(1) if logo_match else ""
+                # 检查是否有特殊后缀
+                has_special = any(suffix in tvg_id for suffix in special_suffixes)
                 
-                special_examples.append({
-                    'id': tvg_id_match.group(1),
-                    'name': channel_name,
-                    'logo': logo
-                })
+                if has_special:
+                    # 获取频道名称
+                    channel_name = ""
+                    if ',' in line:
+                        channel_name = line.split(',')[-1].strip().split('\n')[0]
+                    
+                    # 获取logo
+                    logo_match = re.search(r'tvg-logo="([^"]*)"', line)
+                    logo = logo_match.group(1) if logo_match else ""
+                    
+                    special_examples.append({
+                        'tvg_id': tvg_id,
+                        'channel_name': channel_name,
+                        'logo': logo
+                    })
+                    
+                    if len(special_examples) >= 5:
+                        break
     
     if special_examples:
-        print("   特殊频道处理:")
-        for i, example in enumerate(special_examples[:3]):
+        print("   统一命名处理效果:")
+        for i, example in enumerate(special_examples):
             logo_name = example['logo'].split('/')[-1] if example['logo'] else "无logo"
-            print(f"     {i+1}. tvg-id: {example['id']}")
-            print(f"         频道名: {example['name']}")
+            print(f"     {i+1}. tvg-id: {example['tvg_id']}")
+            print(f"         频道名: {example['channel_name']}")
             print(f"         logo: {logo_name}")
+            print()
     
-    # 7. 显示清理效果
-    print("\n🧹 清理效果总结:")
-    cctv_count = 0
-    plus_count = 0
-    hd_cleaned = 0
-    
-    for line in result_lines[1:50]:  # 检查前50个频道
-        if 'tvg-id="CCTV' in line:
-            cctv_count += 1
-            
-            # 检查+号频道
-            if 'tvg-id="CCTV' in line and ('+' in line or '＋' in line):
-                plus_count += 1
-            
-            # 检查是否有高清字样被清理
-            if '高清' not in line and 'tvg-id="CCTV' in line:
-                hd_cleaned += 1
-    
-    print(f"    前50个频道中CCTV数量: {cctv_count}")
-    print(f"    带+号的特殊频道: {plus_count}")
-    print(f"    高清字样清理: {hd_cleaned}个频道")
-    
-    print("\n" + "="*60)
+    print("="*60)
     print("✅ 脚本执行完成！")
     print("="*60)
 
