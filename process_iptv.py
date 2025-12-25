@@ -22,7 +22,8 @@ from playwright.sync_api import sync_playwright
 def get_m3u_url() -> str:
     """自动化获取M3U下载链接"""
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        # GitHub Actions环境必须使用无头模式
+        browser = p.chromium.launch(headless=True, args=['--no-sandbox', '--disable-dev-shm-usage'])
         page = browser.new_page()
         page.set_default_timeout(60000)
         
@@ -74,8 +75,11 @@ def get_m3u_url() -> str:
             
             if not button_found:
                 # 备用方案
-                page.locator("a:has-text('查看频道列表')").first.click()
-                button_found = True
+                try:
+                    page.locator("a:has-text('查看频道列表')").first.click()
+                    button_found = True
+                except:
+                    print("⚠️ 备用方案也失败")
             
             if button_found:
                 print("4. 按钮点击成功，等待页面跳转...")
@@ -91,19 +95,25 @@ def get_m3u_url() -> str:
                 print(f"当前页面URL: {page.url}")
                 
                 print("5. 定位'M3U下载'链接...")
-                m3u_link_element = page.locator('a:has-text("M3U下载")').first
-                if m3u_link_element.is_visible():
-                    m3u_url = m3u_link_element.get_attribute('href')
-                    print(f"获取到的参数：{m3u_url}")
-                    
-                    # 构造完整的M3U下载链接
-                    base_url = "https://iptv.cqshushu.com/?"
-                    full_m3u_url = base_url + m3u_url.lstrip("?") if m3u_url.startswith("?") else base_url + "?" + m3u_url
-                    
-                    print(f"✅ 完整的M3U下载链接：{full_m3u_url}")
-                    return full_m3u_url
-                else:
-                    print("❌ 未找到可见的M3U下载链接")
+                try:
+                    m3u_link_element = page.locator('a:has-text("M3U下载")').first
+                    if m3u_link_element.is_visible(timeout=5000):
+                        m3u_url = m3u_link_element.get_attribute('href')
+                        print(f"获取到的参数：{m3u_url}")
+                        
+                        # 构造完整的M3U下载链接
+                        base_url = "https://iptv.cqshushu.com/?"
+                        full_m3u_url = base_url + m3u_url.lstrip("?") if m3u_url.startswith("?") else base_url + "?" + m3u_url
+                        
+                        print(f"✅ 完整的M3U下载链接：{full_m3u_url}")
+                        return full_m3u_url
+                    else:
+                        print("❌ 未找到可见的M3U下载链接")
+                        # 截图以便调试
+                        page.screenshot(path="debug_page.png")
+                        sys.exit(1)
+                except Exception as e:
+                    print(f"❌ 定位M3U链接失败: {e}")
                     sys.exit(1)
             else:
                 print("❌ 无法找到'查看频道列表'按钮")
