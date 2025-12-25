@@ -26,10 +26,15 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+          cache: 'pip'  # 启用pip缓存，加速后续安装
       
-      # 3. 安装requests库
+      # 3. 安装依赖（包括playwright和requests）
       - name: Install dependencies
-        run: pip install requests
+        run: |
+          pip install requests playwright
+          # 只安装chromium，不安装firefox和webkit以节省时间和空间
+          playwright install chromium --with-deps
+          echo "✅ 依赖安装完成"
       
       # 4. 运行处理脚本
       - name: Run IPTV processing script
