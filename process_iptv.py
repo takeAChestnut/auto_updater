@@ -60,7 +60,7 @@ def get_m3u_url() -> str:
             
             print("1. 正在访问初始页面...")
             page.goto(
-                "https://iptv.cqshushu.com/?t=multicast&province=all&limit=6&hotel_page=1&multicast_page=1",
+                "https://iptv.cqshushu.com/?t=multicast&province=gd&limit=6&hotel_page=1&multicast_page=1",
                 wait_until="domcontentloaded",
                 timeout=30000
             )
