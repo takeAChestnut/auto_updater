@@ -2,7 +2,7 @@
 """
 IPTV列表自动化处理脚本 - 完整版（三步骤流程）
 功能：
-1. 访问第一个网页 → 点击第一行第一列IP
+1. 访问第一个网页 → 检查第一行IP，如果节目数为0或状态为"暂时失效"则选择下一行，直到找到正常的IP
 2. 跳转到第二个网页 → 点击"查看频道列表"按钮  
 3. 跳转到第三个网页 → 获取"M3U下载"链接
 4. 下载并处理M3U内容（清理、去重、排序）
@@ -24,7 +24,7 @@ from playwright.sync_api import sync_playwright
 def get_m3u_url() -> str:
     """
     自动化获取M3U下载链接（完整三步骤）
-    流程：首页点击IP → 详情页点击"查看频道列表" → 频道列表页获取M3U链接
+    流程：首页检查IP → 详情页点击"查看频道列表" → 频道列表页获取M3U链接
     """
     
     print("🚀 第一阶段：自动获取M3U下载链接（三步骤流程）")
@@ -53,9 +53,9 @@ def get_m3u_url() -> str:
             page.set_default_timeout(30000)
             page.set_default_navigation_timeout(30000)
             
-            # ========== 第一步：访问第一个网页，点击IP ==========
+            # ========== 第一步：访问第一个网页，查找可用的IP ==========
             print("="*50)
-            print("第一步：访问首页并点击IP地址")
+            print("第一步：访问首页并查找可用IP地址")
             print("="*50)
             
             print("1. 正在访问初始页面...")
@@ -68,11 +68,11 @@ def get_m3u_url() -> str:
             # 等待页面加载
             time.sleep(2)
             
-            # 点击第一行第一列的IP地址
-            print("2. 点击第一行第一列的IP地址...")
+            # 查找可用的IP地址
+            print("2. 查找可用的IP地址（检查节目数和状态）...")
             
-            # 使用JavaScript查找并点击第一个IP地址单元格
-            click_result = page.evaluate("""() => {
+            # 使用JavaScript查找表格并检查每一行
+            find_result = page.evaluate("""() => {
                 try {
                     // 查找表格
                     const table = document.querySelector('table');
@@ -81,49 +81,121 @@ def get_m3u_url() -> str:
                         return {success: false, error: '未找到表格'};
                     }
                     
-                    // 获取第一行第一列
+                    // 获取所有行
                     const tbody = table.querySelector('tbody');
                     if (!tbody) {
                         console.error('未找到tbody');
                         return {success: false, error: '未找到tbody'};
                     }
                     
-                    const firstRow = tbody.querySelector('tr');
-                    if (!firstRow) {
+                    const rows = tbody.querySelectorAll('tr');
+                    if (!rows || rows.length === 0) {
                         console.error('未找到表格行');
                         return {success: false, error: '未找到表格行'};
                     }
                     
-                    const firstCell = firstRow.querySelector('td');
-                    if (!firstCell) {
-                        console.error('未找到表格单元格');
-                        return {success: false, error: '未找到表格单元格'};
+                    console.log('找到', rows.length, '行数据');
+                    
+                    // 遍历每一行
+                    for (let i = 0; i < rows.length; i++) {
+                        const row = rows[i];
+                        const cells = row.querySelectorAll('td');
+                        
+                        if (cells.length >= 6) { // 确保有足够的列
+                            const ipCell = cells[0];
+                            const programCountCell = cells[1];
+                            const statusCell = cells[5];
+                            
+                            if (ipCell && programCountCell && statusCell) {
+                                const ipText = ipCell.textContent.trim();
+                                const programCountText = programCountCell.textContent.trim();
+                                const statusText = statusCell.textContent.trim();
+                                
+                                console.log(`第${i+1}行: IP=${ipText}, 节目数=${programCountText}, 状态=${statusText}`);
+                                
+                                // 检查节目数是否为0
+                                const programCount = parseInt(programCountText);
+                                const isProgramCountValid = !isNaN(programCount) && programCount > 0;
+                                
+                                // 检查状态是否为"暂时失效"
+                                const isStatusValid = !statusText.includes('暂时失效') && 
+                                                    !statusText.includes('失效') &&
+                                                    !statusText.includes('下线');
+                                
+                                if (isProgramCountValid && isStatusValid) {
+                                    console.log(`✅ 找到可用IP: ${ipText}，节目数: ${programCountText}，状态: ${statusText}`);
+                                    return {
+                                        success: true,
+                                        rowIndex: i,
+                                        ip: ipText,
+                                        programCount: programCountText,
+                                        status: statusText,
+                                        method: 'valid_ip_found'
+                                    };
+                                } else {
+                                    console.log(`❌ 跳过IP ${ipText}: 节目数=${programCountText}, 状态=${statusText}`);
+                                }
+                            }
+                        }
                     }
                     
-                    const ipText = firstCell.textContent.trim();
-                    console.log('找到IP地址:', ipText);
-                    
-                    // 点击该单元格
-                    if (firstCell.querySelector('a')) {
-                        firstCell.querySelector('a').click();
-                    } else {
-                        firstCell.click();
-                    }
-                    
-                    return {success: true, ip: ipText, method: 'table_cell_click'};
+                    return {
+                        success: false, 
+                        error: '未找到符合条件的IP地址（所有IP节目数为0或状态为暂时失效）'
+                    };
                 } catch (error) {
                     return {success: false, error: error.toString()};
                 }
             }""")
             
+            if not find_result['success']:
+                raise Exception(f"未找到可用IP地址: {find_result.get('error', '未知错误')}")
+            
+            ip_with_port = find_result.get('ip', '')
+            program_count = find_result.get('programCount', '')
+            status = find_result.get('status', '')
+            row_index = find_result.get('rowIndex', 0)
+            
+            print(f"✅ 找到可用IP地址: {ip_with_port}")
+            print(f"   节目数: {program_count}")
+            print(f"   状态: {status}")
+            print(f"   行号: {row_index + 1}")
+            
+            # 点击选中的IP地址
+            print("3. 点击选中的IP地址...")
+            click_result = page.evaluate("""(rowIndex) => {
+                try {
+                    const table = document.querySelector('table');
+                    const tbody = table.querySelector('tbody');
+                    const rows = tbody.querySelectorAll('tr');
+                    
+                    if (rowIndex >= 0 && rowIndex < rows.length) {
+                        const selectedRow = rows[rowIndex];
+                        const firstCell = selectedRow.querySelector('td');
+                        
+                        if (firstCell) {
+                            // 点击该单元格
+                            if (firstCell.querySelector('a')) {
+                                firstCell.querySelector('a').click();
+                            } else {
+                                firstCell.click();
+                            }
+                            return {success: true, clickedIp: firstCell.textContent.trim()};
+                        }
+                    }
+                    return {success: false, error: '无法点击指定行的IP'};
+                } catch (error) {
+                    return {success: false, error: error.toString()};
+                }
+            }""", row_index)
+            
             if not click_result['success']:
                 raise Exception(f"点击IP地址失败: {click_result.get('error', '未知错误')}")
             
-            ip_with_port = click_result.get('ip', '')
             print(f"✅ 点击IP地址成功: {ip_with_port}")
             
             # 等待跳转到第二个页面
-            print("3. 等待跳转到第二个页面（IP详情页）...")
+            print("4. 等待跳转到第二个页面（IP详情页）...")
             time.sleep(3)
             
             # 检查当前URL
@@ -135,7 +207,7 @@ def get_m3u_url() -> str:
             print("第二步：点击'查看频道列表'按钮")
             print("="*50)
             
-            print("4. 查找并点击'查看频道列表'按钮...")
+            print("5. 查找并点击'查看频道列表'按钮...")
             
             # 多种方式查找按钮
             button_found = False
@@ -184,7 +256,7 @@ def get_m3u_url() -> str:
                 raise Exception("未找到'查看频道列表'按钮")
             
             # 等待跳转到第三个页面
-            print("5. 等待跳转到第三个页面（频道列表页）...")
+            print("6. 等待跳转到第三个页面（频道列表页）...")
             time.sleep(3)
             
             # 检查当前URL
@@ -196,7 +268,7 @@ def get_m3u_url() -> str:
             print("第三步：获取'M3U下载'链接")
             print("="*50)
             
-            print("6. 查找'M3U下载'链接...")
+            print("7. 查找'M3U下载'链接...")
             
             # 使用Playwright定位包含"M3U下载"文本的链接
             m3u_element = page.locator('a:has-text("M3U下载")').first
