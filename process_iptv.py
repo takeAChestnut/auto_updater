@@ -1,48 +1,222 @@
 #!/usr/bin/env python3
 """
-IPTV列表自动化处理脚本 - 完整版（三步骤流程）
+IPTV列表自动化处理脚本 - 集成IP检查功能（优化版）
 功能：
-1. 访问第一个网页 → 检查第一行IP，如果节目数为0或状态为"暂时失效"则选择下一行，直到找到正常的IP
-2. 跳转到第二个网页 → 点击"查看频道列表"按钮  
-3. 跳转到第三个网页 → 获取"M3U下载"链接
-4. 下载并处理M3U内容（清理、去重、排序）
-5. 保存为CN.m3u（修复logo扩展名问题）
+1. 访问网页获取所有IP列表
+2. 检查每个IP的可用性，跳过节目数为0或状态为"暂时失效"的IP
+3. 使用第一个可用IP获取M3U链接
+4. 解析M3U内容，提取CCTV5地址进行测试
+5. 如果CCTV5地址测试失败，尝试下一个可用IP
+6. 选择CCTV5测试通过的IP重新获取M3U并处理
+7. 保存为CN.m3u
 """
 
 import re
 import sys
-import requests
+import socket
 import time
-from typing import List, Dict, Tuple
-from datetime import datetime
-from urllib.parse import urlparse, unquote, quote
 import os
-
-# ==================== 自动化获取M3U链接部分 ====================
+import requests
+import subprocess
+from typing import List, Dict, Tuple, Optional
+from datetime import datetime
+from urllib.parse import urlparse
 from playwright.sync_api import sync_playwright
 
-def get_m3u_url() -> str:
-    """
-    自动化获取M3U下载链接（完整三步骤）
-    流程：首页检查IP → 详情页点击"查看频道列表" → 频道列表页获取M3U链接
-    """
+# ==================== IP检查功能 ====================
+def test_cctv5_url(cctv5_url: str) -> bool:
+    """测试CCTV5地址的可用性"""
+    print(f"\n🎯 测试CCTV5地址: {cctv5_url}")
+    print("-" * 60)
     
-    print("🚀 第一阶段：自动获取M3U下载链接（三步骤流程）")
+    # 方法1：直接连接测试
+    method1_result = simple_test(cctv5_url)
+    
+    # 方法2：下载测试
+    method2_result = download_test(cctv5_url, test_duration=2)
+    
+    # 汇总结果
+    print(f"\n测试结果:")
+    print(f"  直接连接测试: {'✓ 成功' if method1_result else '✗ 失败'}")
+    print(f"  下载测试: {'✓ 成功' if method2_result else '✗ 失败'}")
+    
+    success_count = sum([method1_result, method2_result])
+    
+    if success_count == 2:
+        print(f"\n✅ CCTV5地址可用！")
+        return True
+    elif success_count == 1:
+        print(f"\n⚠️  CCTV5地址可能可用")
+        return True  # 部分成功也认为是可用
+    else:
+        print(f"\n❌ CCTV5地址不可用")
+        return False
+
+def simple_test(url):
+    """最简单的测试：直接尝试连接并接收数据"""
+    try:
+        parsed = urlparse(url)
+        host = parsed.hostname
+        port = parsed.port or 80
+        
+        # 创建socket连接
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(5)
+        
+        sock.connect((host, port))
+        
+        # 发送HTTP GET请求
+        path = parsed.path or '/'
+        request = f"GET {path} HTTP/1.1\r\n"
+        request += f"Host: {host}:{port}\r\n"
+        request += "User-Agent: SimpleStreamTest/1.0\r\n"
+        request += "Accept: */*\r\n"
+        request += "Connection: close\r\n"
+        request += "\r\n"
+        
+        sock.sendall(request.encode())
+        
+        # 接收响应头
+        response_header = b""
+        header_start = time.time()
+        
+        while True:
+            chunk = sock.recv(1024)
+            if not chunk:
+                break
+            
+            response_header += chunk
+            
+            if b"\r\n\r\n" in response_header:
+                break
+                
+            if time.time() - header_start > 3:
+                break
+        
+        if response_header:
+            # 接收一些数据体
+            data_received = len(response_header)
+            max_data = 65536
+            data_start = time.time()
+            ts_packets = 0
+            
+            while data_received < max_data:
+                try:
+                    sock.settimeout(2)
+                    chunk = sock.recv(8192)
+                    if not chunk:
+                        break
+                    data_received += len(chunk)
+                    
+                    # 检查是否为TS流数据
+                    if chunk and chunk[0] == 0x47:
+                        ts_packets += 1
+                        
+                except socket.timeout:
+                    break
+            
+            sock.close()
+            
+            if data_received > 0 and ts_packets > 0:
+                print(f"  接收数据: {data_received:,} 字节，TS包: {ts_packets} 个")
+                return True
+            
+        sock.close()
+        return False
+        
+    except Exception as e:
+        print(f"  连接错误: {str(e)}")
+        return False
+
+def download_test(url, test_duration=2):
+    """使用curl下载测试流媒体数据接收"""
+    try:
+        # 检查curl是否可用
+        try:
+            subprocess.run(['curl', '--version'], 
+                          capture_output=True, 
+                          check=True,
+                          timeout=2)
+        except:
+            print("  未找到curl，跳过下载测试")
+            return False
+        
+        # 临时文件名
+        temp_file = "test_cctv5.tmp"
+        
+        # 构建curl命令
+        command = [
+            'curl',
+            '--silent',
+            '--show-error',
+            '--max-time', str(test_duration + 5),
+            '--connect-timeout', '5',
+            '--retry', '0',
+            '--user-agent', 'VLC/3.0.18 LibVLC/3.0.18',
+            '--header', 'Accept: */*',
+            '--header', 'Connection: close',
+            '--output', temp_file,
+            url
+        ]
+        
+        # 启动curl进程
+        process = subprocess.Popen(command)
+        
+        # 等待指定时间后终止
+        try:
+            time.sleep(test_duration)
+            process.terminate()
+            process.wait(timeout=2)
+        except:
+            process.kill()
+        
+        # 检查下载的文件
+        if os.path.exists(temp_file):
+            file_size = os.path.getsize(temp_file)
+            
+            if file_size > 0:
+                # 分析文件内容
+                try:
+                    with open(temp_file, 'rb') as f:
+                        first_packet = f.read(188)
+                        
+                    if first_packet and first_packet[0] == 0x47:
+                        print(f"  下载成功: {file_size:,} 字节，检测到TS流")
+                        
+                        # 清理临时文件
+                        os.remove(temp_file)
+                        return True
+                except:
+                    pass
+                
+                # 清理临时文件
+                os.remove(temp_file)
+            
+        return False
+        
+    except Exception:
+        # 清理临时文件
+        if os.path.exists(temp_file):
+            os.remove(temp_file)
+        return False
+
+# ==================== 自动化获取M3U链接部分 ====================
+def get_available_ips() -> List[Dict]:
+    """获取所有可用的IP地址列表"""
+    print("🔍 获取可用IP地址列表...")
     
     with sync_playwright() as p:
         try:
-            # 启动浏览器（GitHub Actions使用无头模式）
             browser = p.chromium.launch(
-                headless=True, 
+                headless=True,
                 args=[
-                    '--no-sandbox', 
+                    '--no-sandbox',
                     '--disable-dev-shm-usage',
                     '--disable-gpu',
                     '--disable-setuid-sandbox',
                 ]
             )
             
-            # 创建浏览器上下文
             context = browser.new_context(
                 viewport={'width': 1280, 'height': 720},
                 user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
@@ -53,55 +227,42 @@ def get_m3u_url() -> str:
             page.set_default_timeout(30000)
             page.set_default_navigation_timeout(30000)
             
-            # ========== 第一步：访问第一个网页，查找可用的IP ==========
-            print("="*50)
-            print("第一步：访问首页并查找可用IP地址")
-            print("="*50)
-            
-            print("1. 正在访问初始页面...")
+            # 访问首页
+            print("访问首页...")
             page.goto(
-                "https://iptv.cqshushu.com/?t=multicast&province=gd&limit=6&hotel_page=1&multicast_page=1",
+                "https://iptv.cqshushu.com/?t=multicast&province=all&limit=6&hotel_page=1&multicast_page=1",
                 wait_until="domcontentloaded",
                 timeout=30000
             )
             
-            # 等待页面加载
             time.sleep(2)
             
-            # 查找可用的IP地址
-            print("2. 查找可用的IP地址（检查节目数和状态）...")
-            
-            # 使用JavaScript查找表格并检查每一行
+            # 查找所有可用的IP地址
+            print("查找所有可用IP地址...")
             find_result = page.evaluate("""() => {
                 try {
-                    // 查找表格
                     const table = document.querySelector('table');
                     if (!table) {
-                        console.error('未找到表格');
                         return {success: false, error: '未找到表格'};
                     }
                     
-                    // 获取所有行
                     const tbody = table.querySelector('tbody');
                     if (!tbody) {
-                        console.error('未找到tbody');
                         return {success: false, error: '未找到tbody'};
                     }
                     
                     const rows = tbody.querySelectorAll('tr');
                     if (!rows || rows.length === 0) {
-                        console.error('未找到表格行');
                         return {success: false, error: '未找到表格行'};
                     }
                     
-                    console.log('找到', rows.length, '行数据');
+                    const availableIPs = [];
                     
-                    // 遍历每一行
                     for (let i = 0; i < rows.length; i++) {
                         const row = rows[i];
                         const cells = row.querySelectorAll('td');
                         
-                        if (cells.length >= 6) { // 确保有足够的列
+                        if (cells.length >= 6) {
                             const ipCell = cells[0];
                             const programCountCell = cells[1];
                             const statusCell = cells[5];
@@ -110,8 +271,6 @@ def get_m3u_url() -> str:
                                 const ipText = ipCell.textContent.trim();
                                 const programCountText = programCountCell.textContent.trim();
                                 const statusText = statusCell.textContent.trim();
-                                
-                                console.log(`第${i+1}行: IP=${ipText}, 节目数=${programCountText}, 状态=${statusText}`);
                                 
                                 // 检查节目数是否为0
                                 const programCount = parseInt(programCountText);
@@ -123,25 +282,20 @@ def get_m3u_url() -> str:
                                                     !statusText.includes('下线');
                                 
                                 if (isProgramCountValid && isStatusValid) {
-                                    console.log(`✅ 找到可用IP: ${ipText}，节目数: ${programCountText}，状态: ${statusText}`);
-                                    return {
-                                        success: true,
-                                        rowIndex: i,
+                                    availableIPs.push({
                                         ip: ipText,
                                         programCount: programCountText,
                                         status: statusText,
-                                        method: 'valid_ip_found'
-                                    };
-                                } else {
-                                    console.log(`❌ 跳过IP ${ipText}: 节目数=${programCountText}, 状态=${statusText}`);
+                                        rowIndex: i
+                                    });
                                 }
                             }
                         }
                     }
                     
                     return {
-                        success: false, 
-                        error: '未找到符合条件的IP地址（所有IP节目数为0或状态为暂时失效）'
+                        success: true,
+                        ips: availableIPs
                     };
                 } catch (error) {
                     return {success: false, error: error.toString()};
@@ -149,20 +303,61 @@ def get_m3u_url() -> str:
             }""")
             
             if not find_result['success']:
-                raise Exception(f"未找到可用IP地址: {find_result.get('error', '未知错误')}")
+                raise Exception(f"获取IP列表失败: {find_result.get('error', '未知错误')}")
             
-            ip_with_port = find_result.get('ip', '')
-            program_count = find_result.get('programCount', '')
-            status = find_result.get('status', '')
-            row_index = find_result.get('rowIndex', 0)
+            available_ips = find_result.get('ips', [])
+            print(f"找到 {len(available_ips)} 个可用IP地址")
             
-            print(f"✅ 找到可用IP地址: {ip_with_port}")
-            print(f"   节目数: {program_count}")
-            print(f"   状态: {status}")
-            print(f"   行号: {row_index + 1}")
+            browser.close()
+            return available_ips
             
-            # 点击选中的IP地址
-            print("3. 点击选中的IP地址...")
+        except Exception as e:
+            print(f"❌ 获取IP列表失败: {str(e)}")
+            try:
+                browser.close()
+            except:
+                pass
+            raise
+
+def get_m3u_url_for_ip(ip_info: Dict) -> str:
+    """为指定IP获取M3U下载链接"""
+    ip_with_port = ip_info['ip']
+    row_index = ip_info['rowIndex']
+    
+    print(f"\n🔄 为IP {ip_with_port} 获取M3U链接...")
+    
+    with sync_playwright() as p:
+        try:
+            browser = p.chromium.launch(
+                headless=True,
+                args=[
+                    '--no-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--disable-gpu',
+                    '--disable-setuid-sandbox',
+                ]
+            )
+            
+            context = browser.new_context(
+                viewport={'width': 1280, 'height': 720},
+                user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                ignore_https_errors=True
+            )
+            
+            page = context.new_page()
+            page.set_default_timeout(30000)
+            page.set_default_navigation_timeout(30000)
+            
+            # 访问首页
+            page.goto(
+                "https://iptv.cqshushu.com/?t=multicast&province=all&limit=6&hotel_page=1&multicast_page=1",
+                wait_until="domcontentloaded",
+                timeout=30000
+            )
+            
+            time.sleep(2)
+            
+            # 点击指定的IP地址
             click_result = page.evaluate("""(rowIndex) => {
                 try {
                     const table = document.querySelector('table');
@@ -174,13 +369,12 @@ def get_m3u_url() -> str:
                         const firstCell = selectedRow.querySelector('td');
                         
                         if (firstCell) {
-                            // 点击该单元格
                             if (firstCell.querySelector('a')) {
                                 firstCell.querySelector('a').click();
                             } else {
                                 firstCell.click();
                             }
-                            return {success: true, clickedIp: firstCell.textContent.trim()};
+                            return {success: true};
                         }
                     }
                     return {success: false, error: '无法点击指定行的IP'};
@@ -192,24 +386,10 @@ def get_m3u_url() -> str:
             if not click_result['success']:
                 raise Exception(f"点击IP地址失败: {click_result.get('error', '未知错误')}")
             
-            print(f"✅ 点击IP地址成功: {ip_with_port}")
-            
             # 等待跳转到第二个页面
-            print("4. 等待跳转到第二个页面（IP详情页）...")
             time.sleep(3)
             
-            # 检查当前URL
-            current_url = page.url
-            print(f"当前URL（第二个页面）: {current_url}")
-            
-            # ========== 第二步：在第二个网页点击"查看频道列表" ==========
-            print("\n" + "="*50)
-            print("第二步：点击'查看频道列表'按钮")
-            print("="*50)
-            
-            print("5. 查找并点击'查看频道列表'按钮...")
-            
-            # 多种方式查找按钮
+            # 点击"查看频道列表"按钮
             button_found = False
             button_selectors = [
                 'a:has-text("查看频道列表")',
@@ -223,22 +403,18 @@ def get_m3u_url() -> str:
                 try:
                     element = page.locator(selector).first
                     if element.is_visible(timeout=5000):
-                        print(f"✅ 找到按钮: 使用选择器 '{selector}'")
                         element.click()
                         button_found = True
                         break
                 except:
                     continue
             
-            # 如果选择器方式失败，使用JavaScript查找
             if not button_found:
-                print("使用JavaScript查找按钮...")
                 button_clicked = page.evaluate("""() => {
                     const elements = document.querySelectorAll('a, button, span, div');
                     for (let elem of elements) {
                         const text = elem.textContent || elem.innerText || '';
                         if (text.includes('查看频道列表') || text.includes('频道列表')) {
-                            console.log('找到按钮文本:', text);
                             if (elem.click) {
                                 elem.click();
                                 return true;
@@ -250,39 +426,22 @@ def get_m3u_url() -> str:
                 
                 if button_clicked:
                     button_found = True
-                    print("✅ JavaScript找到并点击按钮")
             
             if not button_found:
                 raise Exception("未找到'查看频道列表'按钮")
             
             # 等待跳转到第三个页面
-            print("6. 等待跳转到第三个页面（频道列表页）...")
             time.sleep(3)
             
-            # 检查当前URL
-            current_url = page.url
-            print(f"当前URL（第三个页面）: {current_url}")
-            
-            # ========== 第三步：在第三个网页获取"M3U下载"链接 ==========
-            print("\n" + "="*50)
-            print("第三步：获取'M3U下载'链接")
-            print("="*50)
-            
-            print("7. 查找'M3U下载'链接...")
-            
-            # 使用Playwright定位包含"M3U下载"文本的链接
+            # 获取"M3U下载"链接
             m3u_element = page.locator('a:has-text("M3U下载")').first
             
             if not m3u_element.is_visible(timeout=10000):
-                # 备用方法：使用JavaScript查找
-                print("Playwright方式未找到，使用JavaScript查找...")
                 m3u_href = page.evaluate("""() => {
-                    // 查找所有链接
                     const allLinks = document.querySelectorAll('a');
                     for (let link of allLinks) {
                         const text = link.textContent || link.innerText || '';
                         if (text.includes('M3U下载')) {
-                            console.log('找到M3U下载链接文本:', text);
                             return link.getAttribute('href');
                         }
                     }
@@ -292,16 +451,12 @@ def get_m3u_url() -> str:
                 if not m3u_href:
                     raise Exception("未找到'M3U下载'链接")
             else:
-                # 获取链接的href属性
                 m3u_href = m3u_element.get_attribute('href')
             
             if not m3u_href:
                 raise Exception("M3U链接href属性为空")
             
-            print(f"获取到的链接参数: {m3u_href}")
-            
             # 构造完整的M3U下载链接
-            # 根据HTML格式，直接拼接基础URL
             if m3u_href.startswith('?'):
                 full_m3u_url = f"https://iptv.cqshushu.com/{m3u_href}"
             elif m3u_href.startswith('/?'):
@@ -309,43 +464,41 @@ def get_m3u_url() -> str:
             elif m3u_href.startswith('http'):
                 full_m3u_url = m3u_href
             else:
-                # 默认情况
                 full_m3u_url = f"https://iptv.cqshushu.com/?{m3u_href}"
             
-            print(f"✅ 完整的M3U下载链接: {full_m3u_url}")
-            
-            # 验证链接格式
-            if ip_with_port and ':' in ip_with_port:
-                port = ip_with_port.split(':')[1]
-                if f'%3A{port}' not in full_m3u_url:
-                    print(f"⚠️ 注意：链接中可能缺少端口号 {port}")
-            
-            # 关闭浏览器
             browser.close()
             
+            print(f"✅ 获取到M3U链接: {full_m3u_url}")
             return full_m3u_url
             
         except Exception as e:
             print(f"❌ 获取M3U链接失败: {str(e)}")
-            
-            # 尝试截图以便调试
-            try:
-                page.screenshot(path="automation_error.png")
-                print("📸 已保存错误截图: automation_error.png")
-            except:
-                pass
-            
-            # 确保浏览器关闭
             try:
                 browser.close()
             except:
                 pass
-            
             raise
+
+def extract_cctv5_url(m3u_content: str) -> Optional[str]:
+    """从M3U内容中提取CCTV5的地址"""
+    lines = m3u_content.strip().split('\n')
+    
+    for i, line in enumerate(lines):
+        if line.startswith('#EXTINF:'):
+            # 检查是否是CCTV5
+            if 'CCTV5' in line.upper() or 'CCTV-5' in line:
+                # 下一行应该是URL
+                if i + 1 < len(lines) and not lines[i + 1].startswith('#'):
+                    cctv5_url = lines[i + 1].strip()
+                    print(f"找到CCTV5地址: {cctv5_url}")
+                    return cctv5_url
+    
+    print("未找到CCTV5地址")
+    return None
 
 # ==================== M3U处理部分 ====================
 def fetch_m3u_content(url: str) -> str:
-    """从指定URL获取M3U内容（使用requests库）"""
+    """从指定URL获取M3U内容"""
     print("📥 正在下载M3U文件内容...")
     
     try:
@@ -361,87 +514,14 @@ def fetch_m3u_content(url: str) -> str:
         content = response.text
         print(f"✅ 成功获取内容，长度: {len(content)} 字符")
         
-        # 检查是否为有效的M3U文件
         if '#EXTM3U' not in content:
             print("⚠️ 警告：下载的内容可能不是标准M3U格式")
         
         return content
         
-    except requests.exceptions.HTTPError as e:
-        print(f"HTTP错误: {e}")
-        if response.status_code == 403:
-            print("服务器拒绝访问（403 Forbidden），可能需要检查网络或Cookie设置")
-        sys.exit(1)
-    except requests.exceptions.Timeout:
-        print("请求超时，服务器响应过慢")
-        sys.exit(1)
     except Exception as e:
-        print(f"获取内容失败: {e}")
-        sys.exit(1)
-
-def parse_m3u(content: str) -> Tuple[List[Tuple[str, Dict, str]], str]:
-    """
-    解析M3U内容
-    返回: (entries, first_line)
-    entries格式: (tvg_id, attributes, channel_line)
-    """
-    lines = content.strip().split('\n')
-    entries = []
-    channel_count = 0
-    first_line = ""
-    
-    # 提取文件头
-    if lines and lines[0].startswith('#EXTM3U'):
-        first_line = lines[0]
-        print(f"识别到文件头: {first_line}")
-        lines = lines[1:]
-    
-    i = 0
-    while i < len(lines):
-        if lines[i].startswith('#EXTINF:'):
-            extinf_line = lines[i]
-            i += 1
-            
-            if i < len(lines) and not lines[i].startswith('#'):
-                stream_url = lines[i].strip()
-                
-                # 提取tvg-id
-                tvg_id_match = re.search(r'tvg-id="([^"]*)"', extinf_line)
-                tvg_id = tvg_id_match.group(1) if tvg_id_match else ""
-                
-                # 提取tvg-logo
-                logo_match = re.search(r'tvg-logo="([^"]*)"', extinf_line)
-                tvg_logo = logo_match.group(1) if logo_match else ""
-                
-                # 提取group-title
-                group_match = re.search(r'group-title="([^"]*)"', extinf_line)
-                group_title = group_match.group(1) if group_match else ""
-                
-                # 提取频道名称
-                channel_name = ""
-                if ',' in extinf_line:
-                    channel_name = extinf_line.split(',')[-1].strip()
-                
-                # 构建频道行
-                channel_line = f'#EXTINF:-1 tvg-id="{tvg_id}"'
-                if tvg_logo:
-                    channel_line += f' tvg-logo="{tvg_logo}"'
-                if group_title:
-                    channel_line += f' group-title="{group_title}"'
-                channel_line += f',{channel_name}\n{stream_url}'
-                
-                entries.append((tvg_id, {
-                    'tvg-logo': tvg_logo,
-                    'group-title': group_title,
-                    'channel_name': channel_name,
-                    'stream_url': stream_url
-                }, channel_line))
-                
-                channel_count += 1
-        i += 1
-    
-    print(f"📊 解析出 {channel_count} 个频道条目")
-    return entries, first_line
+        print(f"❌ 获取M3U内容失败: {e}")
+        raise
 
 def clean_cctv_name(name: str, name_type: str = "tvg_id") -> str:
     """统一清理CCTV相关名称"""
@@ -457,14 +537,11 @@ def clean_cctv_name(name: str, name_type: str = "tvg_id") -> str:
             prefix, num, suffix = cctv_match.groups()
             suffix = suffix.strip()
 
-            # 需要保留的特定后缀
             preserve_suffixes = ['新闻', '体育', '综艺', '电影', '少儿', '音乐', '戏曲', '农业', '科教']
 
-            # 处理CCTV5+等格式
             if suffix.endswith('+') or suffix.endswith('＋'):
                 cleaned = f"CCTV{num}+"
             else:
-                # 检查是否有需要保留的特定后缀
                 preserved_suffix = ""
                 for ps in preserve_suffixes:
                     if suffix.endswith(ps) or f"-{ps}" in suffix:
@@ -474,19 +551,14 @@ def clean_cctv_name(name: str, name_type: str = "tvg_id") -> str:
                 if preserved_suffix:
                     cleaned = f"CCTV{num}-{preserved_suffix}"
                 else:
-                    # 移除通用后缀
                     remove_suffixes = ['-综合', '综合', 'HD', 'UHD', 'FHD', '超清', '标清', ' ']
                     temp_suffix = suffix
                     for rs in remove_suffixes:
                         temp_suffix = temp_suffix.replace(rs, "")
                     cleaned = f"CCTV{num}"
 
-    # 对logo文件名进行安全处理
     if name_type == "logo" and cleaned != original_name:
         cleaned = re.sub(r'[<>:"/\\|?*]', '', cleaned)
-
-    if original_name != cleaned:
-        print(f"    {name_type}清理: {original_name} → {cleaned}")
 
     return cleaned
 
@@ -495,7 +567,6 @@ def clean_tvg_id(tvg_id: str) -> str:
     original_id = tvg_id
     corrected_id = tvg_id
     
-    # 纠正拼写错误 CCVT -> CCTV
     if 'CCVT' in corrected_id.upper():
         corrected_id = corrected_id.upper().replace('CCVT', 'CCTV')
         if original_id != corrected_id:
@@ -504,28 +575,20 @@ def clean_tvg_id(tvg_id: str) -> str:
     return clean_cctv_name(corrected_id, "tvg_id")
 
 def clean_logo_url(logo_url: str, tvg_id: str = "") -> str:
-    """重构tvg-logo URL，使用固定模板格式"""
+    """重构tvg-logo URL"""
     if not tvg_id:
-        # 如果没有tvg-id，保持原样
         return logo_url
     
-    # 清理tvg-id（去除特殊字符，确保是有效的文件名）
     clean_id = clean_tvg_id(tvg_id)
-    
-    # 构建新的logo URL
     base_url = "https://gcore.jsdelivr.net/gh/taksssss/tv/icon/"
     new_logo_url = f"{base_url}{clean_id}.png"
-    
-    # 记录变化
-    if logo_url != new_logo_url:
-        print(f"    logo重构: {logo_url or '无'} → {new_logo_url}")
     
     return new_logo_url
 
 def extract_cctv_number(tvg_id: str) -> int:
     """从CCTV频道ID中提取数字用于排序"""
     if not tvg_id.startswith('CCTV'):
-        return 9999  # 非CCTV频道排后面
+        return 9999
     
     match = re.search(r'CCTV[-\s]?(\d+)', tvg_id)
     if match:
@@ -536,72 +599,91 @@ def extract_cctv_number(tvg_id: str) -> int:
     
     return 0
 
-def process_entries(entries: List[Tuple[str, Dict, str]], first_line: str = "") -> List[str]:
-    """处理条目：清理、去重、排序"""
-    print("🔄 开始处理频道列表...")
+def process_m3u_content(content: str) -> str:
+    """处理M3U内容：清理、去重、排序"""
+    lines = content.strip().split('\n')
+    entries = []
+    first_line = ""
     
-    # 1. 清理所有字段
-    processed = []
-    for tvg_id, attrs, channel_line in entries:
-        clean_id = clean_tvg_id(tvg_id)
-        
-        # 清理频道名称
-        if attrs['channel_name']:
-            channel_name = attrs['channel_name']
-            # 纠正拼写错误
-            if 'CCVT' in channel_name.upper():
-                corrected_name = channel_name.upper().replace('CCVT', 'CCTV')
-                if channel_name != corrected_name:
-                    print(f"    频道名拼写纠正: {channel_name} → {corrected_name}")
-                clean_name = clean_cctv_name(corrected_name, "channel_name")
-            else:
-                clean_name = clean_cctv_name(attrs['channel_name'], "channel_name")
-        else:
-            clean_name = ""
-        
-        # 清理logo（确保有扩展名）
-        clean_logo = clean_logo_url(attrs['tvg-logo'], clean_id)
-        
-        # 清理group-title
-        clean_group = attrs['group-title']
-        if clean_group:
-            clean_group = clean_group.replace("高清", "")
-        
-        # 构建新的频道行
-        new_line = f'#EXTINF:-1 tvg-id="{clean_id}"'
-        if clean_logo:
-            new_line += f' tvg-logo="{clean_logo}"'
-        if clean_group:
-            new_line += f' group-title="{clean_group}"'
-        new_line += f',{clean_name}\n{attrs["stream_url"]}'
-        
-        processed.append((clean_id, new_line))
+    # 提取文件头
+    if lines and lines[0].startswith('#EXTM3U'):
+        first_line = lines[0]
+        lines = lines[1:]
     
-    # 2. 根据tvg-id去重（保留最后一个）
+    i = 0
+    while i < len(lines):
+        if lines[i].startswith('#EXTINF:'):
+            extinf_line = lines[i]
+            i += 1
+            
+            if i < len(lines) and not lines[i].startswith('#'):
+                stream_url = lines[i].strip()
+                
+                tvg_id_match = re.search(r'tvg-id="([^"]*)"', extinf_line)
+                tvg_id = tvg_id_match.group(1) if tvg_id_match else ""
+                
+                logo_match = re.search(r'tvg-logo="([^"]*)"', extinf_line)
+                tvg_logo = logo_match.group(1) if logo_match else ""
+                
+                group_match = re.search(r'group-title="([^"]*)"', extinf_line)
+                group_title = group_match.group(1) if group_match else ""
+                
+                channel_name = ""
+                if ',' in extinf_line:
+                    channel_name = extinf_line.split(',')[-1].strip()
+                
+                # 清理字段
+                clean_id = clean_tvg_id(tvg_id)
+                
+                if channel_name:
+                    if 'CCVT' in channel_name.upper():
+                        corrected_name = channel_name.upper().replace('CCVT', 'CCTV')
+                        clean_name = clean_cctv_name(corrected_name, "channel_name")
+                    else:
+                        clean_name = clean_cctv_name(channel_name, "channel_name")
+                else:
+                    clean_name = ""
+                
+                clean_logo = clean_logo_url(tvg_logo, clean_id)
+                
+                if group_title:
+                    clean_group = group_title.replace("高清", "")
+                else:
+                    clean_group = ""
+                
+                # 构建新的频道行
+                new_line = f'#EXTINF:-1 tvg-id="{clean_id}"'
+                if clean_logo:
+                    new_line += f' tvg-logo="{clean_logo}"'
+                if clean_group:
+                    new_line += f' group-title="{clean_group}"'
+                new_line += f',{clean_name}\n{stream_url}'
+                
+                entries.append((clean_id, new_line))
+        i += 1
+    
+    # 去重
     unique_dict = {}
     duplicate_count = 0
-    for tvg_id, channel_line in processed:
+    for tvg_id, channel_line in entries:
         if tvg_id in unique_dict:
             duplicate_count += 1
         unique_dict[tvg_id] = channel_line
     
     if duplicate_count > 0:
         print(f"🔄 去重操作：移除了 {duplicate_count} 个重复频道")
-    print(f"📊 去重后剩余 {len(unique_dict)} 个唯一频道")
     
-    # 3. 排序：CCTV按数字 → 卫视 → 其他
+    # 排序
     def sort_key(item):
         tvg_id, _ = item
         
-        # 分类权重
         if tvg_id.startswith('CCTV'):
-            category_weight = 0  # CCTV权重最高
+            category_weight = 0
         elif tvg_id.endswith('卫视') or tvg_id.endswith('卫視'):
-            category_weight = 1  # 卫视其次
+            category_weight = 1
         else:
-            category_weight = 2  # 其他最后
+            category_weight = 2
         
-        # CCTV频道按数字排序
         if tvg_id.startswith('CCTV'):
             num = extract_cctv_number(tvg_id)
             return (category_weight, num, tvg_id)
@@ -610,119 +692,120 @@ def process_entries(entries: List[Tuple[str, Dict, str]], first_line: str = "") 
     
     sorted_items = sorted(unique_dict.items(), key=sort_key)
     
-    # 统计各类频道数量
-    cctv_count = sum(1 for tvg_id, _ in sorted_items if tvg_id.startswith('CCTV'))
-    weishi_count = sum(1 for tvg_id, _ in sorted_items if tvg_id.endswith('卫視') or tvg_id.endswith('卫视'))
-    other_count = len(sorted_items) - cctv_count - weishi_count
-    
-    print(f"📈 排序结果：CCTV频道 {cctv_count} 个，卫视频道 {weishi_count} 个，其他频道 {other_count} 个")
-    
-    # 4. 构建结果行
+    # 构建结果
     if first_line:
         result_lines = [first_line]
     else:
         result_lines = ["#EXTM3U"]
     result_lines.extend(line for _, line in sorted_items)
     
-    return result_lines
-
-def save_output(result_lines: List[str], filename: str = "CN.m3u"):
-    """保存处理结果到文件"""
-    output_content = '\n'.join(result_lines)
-    
-    with open(filename, 'w', encoding='utf-8') as f:
-        f.write(output_content)
-    
-    print(f"💾 处理完成！共 {len(result_lines)-1} 个频道已保存到 {filename}")
-    
-    return filename
-
-def preview_results(result_lines: List[str], count: int = 15):
-    """预览处理结果"""
-    print("\n" + "="*50)
-    print("📺 排序后的前15个频道：")
-    print("="*50)
-    
-    cctv_shown = 0
-    weishi_shown = 0
-    other_shown = 0
-    
-    for i, line in enumerate(result_lines[1:], 1):
-        if i > count:
-            break
-            
-        if line.startswith('#EXTINF:'):
-            # 提取频道名称
-            parts = line.split(',')
-            if len(parts) > 1:
-                channel_name = parts[-1].strip().split('\n')[0]
-            else:
-                channel_name = line
-                
-            # 提取tvg-id用于分类
-            tvg_id_match = re.search(r'tvg-id="([^"]*)"', line)
-            tvg_id = tvg_id_match.group(1) if tvg_id_match else ""
-            
-            # 分类标识
-            category = ""
-            if tvg_id.startswith('CCTV'):
-                category = "[CCTV]"
-                cctv_shown += 1
-            elif tvg_id.endswith('卫视') or tvg_id.endswith('卫視'):
-                category = "[卫视]"
-                weishi_shown += 1
-            else:
-                category = "[其他]"
-                other_shown += 1
-            
-            print(f"  {i:2d}. {category} {channel_name}")
-    
-    print("="*50)
-    print(f"预览统计: CCTV {cctv_shown} 个, 卫视 {weishi_shown} 个, 其他 {other_shown} 个")
+    return '\n'.join(result_lines)
 
 # ==================== 主函数 ====================
 def main():
     """主函数"""
     print("="*60)
-    print("🎬 IPTV列表自动化处理脚本 - 完整三步骤流程")
+    print("🎬 IPTV列表自动化处理脚本 - 带IP检查功能")
     print(f"🕒 开始时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("="*60)
     
     try:
-        # 第一阶段：自动获取M3U链接（三步骤）
-        m3u_url = get_m3u_url()
-        print(f"🌐 获取到M3U链接: {m3u_url}")
+        # 第一步：获取所有可用IP
+        print("\n📋 第一步：获取可用IP列表")
+        print("-"*60)
+        available_ips = get_available_ips()
         
-        print("\n" + "="*60)
-        print("🚀 第二阶段：下载并处理M3U内容")
-        print("="*60)
-        
-        # 第二阶段：获取M3U内容
-        content = fetch_m3u_content(m3u_url)
-        
-        # 第三阶段：解析内容
-        entries, first_line = parse_m3u(content)
-        
-        if not entries:
-            print("❌ 错误：未解析到任何频道条目")
+        if not available_ips:
+            print("❌ 未找到可用IP地址")
             sys.exit(1)
         
-        # 第四阶段：处理条目
-        result_lines = process_entries(entries, first_line)
+        print(f"找到 {len(available_ips)} 个可用IP:")
+        for i, ip_info in enumerate(available_ips, 1):
+            print(f"  {i}. IP: {ip_info['ip']}, 节目数: {ip_info['programCount']}, 状态: {ip_info['status']}")
         
-        # 第五阶段：保存输出
-        output_file = save_output(result_lines, "CN.m3u")
+        # 第二步：逐个测试IP，直到找到CCTV5可用的IP
+        print("\n📋 第二步：测试IP的CCTV5地址可用性")
+        print("-"*60)
         
-        # 第六阶段：预览结果
-        preview_results(result_lines)
+        selected_ip = None
+        selected_m3u_url = None
+        
+        for ip_info in available_ips:
+            ip_with_port = ip_info['ip']
+            print(f"\n测试IP: {ip_with_port}")
+            
+            try:
+                # 获取该IP的M3U链接
+                m3u_url = get_m3u_url_for_ip(ip_info)
+                
+                # 下载M3U内容
+                m3u_content = fetch_m3u_content(m3u_url)
+                
+                # 提取CCTV5地址
+                cctv5_url = extract_cctv5_url(m3u_content)
+                
+                if cctv5_url:
+                    # 测试CCTV5地址
+                    if test_cctv5_url(cctv5_url):
+                        selected_ip = ip_info
+                        selected_m3u_url = m3u_url
+                        print(f"\n✅ 找到可用IP: {ip_with_port}")
+                        break
+                    else:
+                        print(f"❌ IP {ip_with_port} 的CCTV5地址不可用，尝试下一个IP")
+                else:
+                    print(f"⚠️  IP {ip_with_port} 的M3U中没有CCTV5地址，尝试下一个IP")
+                    
+            except Exception as e:
+                print(f"❌ 处理IP {ip_with_port} 时出错: {str(e)}，尝试下一个IP")
+                continue
+        
+        if not selected_ip:
+            print("\n❌ 所有IP的CCTV5地址都不可用")
+            sys.exit(1)
+        
+        # 第三步：处理选中的IP的M3U内容
+        print("\n📋 第三步：处理M3U内容")
+        print("-"*60)
+        print(f"使用IP: {selected_ip['ip']}")
+        
+        # 重新获取M3U内容（确保是最新的）
+        final_m3u_content = fetch_m3u_content(selected_m3u_url)
+        
+        # 处理M3U内容
+        processed_content = process_m3u_content(final_m3u_content)
+        
+        # 保存到文件
+        output_file = "CN.m3u"
+        with open(output_file, 'w', encoding='utf-8') as f:
+            f.write(processed_content)
+        
+        # 统计频道数量
+        channel_count = processed_content.count('#EXTINF:')
+        print(f"\n✅ 处理完成！")
+        print(f"📁 输出文件: {output_file}")
+        print(f"📺 频道数量: {channel_count} 个")
+        
+        # 预览前10个频道
+        print("\n📺 前10个频道预览:")
+        print("-"*40)
+        lines = processed_content.split('\n')
+        count = 0
+        for i, line in enumerate(lines):
+            if line.startswith('#EXTINF:'):
+                if count < 10:
+                    # 提取频道名称
+                    if ',' in line:
+                        channel_name = line.split(',')[-1].strip()
+                        print(f"  {count+1}. {channel_name}")
+                        count += 1
         
         print("\n" + "="*60)
         print("✅ 脚本执行完成！")
-        print(f"📁 输出文件: {output_file}")
         print("="*60)
         
     except Exception as e:
-        print(f"❌ 脚本执行失败: {str(e)}")
+        print(f"\n❌ 脚本执行失败: {str(e)}")
         sys.exit(1)
 
 if __name__ == "__main__":
