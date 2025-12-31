@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 IPTV列表自动化处理脚本 - 集成IP检查功能（优化版）
+
 功能：
 1. 访问网页获取所有IP列表
 2. 检查每个IP的可用性，跳过节目数为0或状态为"暂时失效"的IP
@@ -22,6 +23,13 @@ from typing import List, Dict, Tuple, Optional
 from datetime import datetime
 from urllib.parse import urlparse
 from playwright.sync_api import sync_playwright
+
+# ==================== 配置参数 ====================
+# 目标网站URL
+TARGET_URL = "https://iptv.cqshushu.com/?t=multicast&province=gd&limit=6&hotel_page=1&multicast_page=1"
+
+# Chrome User-Agent
+CHROME_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 
 # ==================== IP检查功能 ====================
 def test_cctv5_url(cctv5_url: str) -> bool:
@@ -69,7 +77,7 @@ def simple_test(url):
         path = parsed.path or '/'
         request = f"GET {path} HTTP/1.1\r\n"
         request += f"Host: {host}:{port}\r\n"
-        request += "User-Agent: SimpleStreamTest/1.0\r\n"
+        request += f"User-Agent: {CHROME_UA}\r\n"  # 使用Chrome UA
         request += "Accept: */*\r\n"
         request += "Connection: close\r\n"
         request += "\r\n"
@@ -144,7 +152,7 @@ def download_test(url, test_duration=2):
         # 临时文件名
         temp_file = "test_cctv5.tmp"
         
-        # 构建curl命令
+        # 构建curl命令 - 使用Chrome User-Agent
         command = [
             'curl',
             '--silent',
@@ -152,14 +160,15 @@ def download_test(url, test_duration=2):
             '--max-time', str(test_duration + 5),
             '--connect-timeout', '5',
             '--retry', '0',
-            '--user-agent', 'VLC/3.0.18 LibVLC/3.0.18',
+            '--user-agent', CHROME_UA,
             '--header', 'Accept: */*',
             '--header', 'Connection: close',
             '--output', temp_file,
             url
         ]
         
-        # 启动curl进程
+        # 启动curl进程并记录开始时间
+        start_time = time.time()
         process = subprocess.Popen(command)
         
         # 等待指定时间后终止
@@ -170,11 +179,18 @@ def download_test(url, test_duration=2):
         except:
             process.kill()
         
+        # 记录结束时间
+        elapsed = time.time() - start_time
+        
         # 检查下载的文件
         if os.path.exists(temp_file):
             file_size = os.path.getsize(temp_file)
             
             if file_size > 0:
+                # 计算下载速度
+                speed_kb = file_size / elapsed / 1024
+                speed_mb = speed_kb / 1024
+                
                 # 分析文件内容
                 try:
                     with open(temp_file, 'rb') as f:
@@ -182,12 +198,16 @@ def download_test(url, test_duration=2):
                         
                     if first_packet and first_packet[0] == 0x47:
                         print(f"  下载成功: {file_size:,} 字节，检测到TS流")
+                        print(f"  平均速度: {speed_kb:.1f} KB/s ({speed_mb:.2f} MB/s)")
                         
                         # 清理临时文件
                         os.remove(temp_file)
                         return True
                 except:
                     pass
+                
+                print(f"  下载完成: {file_size:,} 字节")
+                print(f"  平均速度: {speed_kb:.1f} KB/s ({speed_mb:.2f} MB/s)")
                 
                 # 清理临时文件
                 os.remove(temp_file)
@@ -204,6 +224,7 @@ def download_test(url, test_duration=2):
 def get_available_ips() -> List[Dict]:
     """获取所有可用的IP地址列表"""
     print("🔍 获取可用IP地址列表...")
+    print(f"📡 访问网站: {TARGET_URL}")
     
     with sync_playwright() as p:
         try:
@@ -219,26 +240,26 @@ def get_available_ips() -> List[Dict]:
             
             context = browser.new_context(
                 viewport={'width': 1280, 'height': 720},
-                user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                user_agent=CHROME_UA,  # 使用Chrome UA
                 ignore_https_errors=True
             )
             
             page = context.new_page()
-            page.set_default_timeout(30000)
-            page.set_default_navigation_timeout(30000)
+            page.set_default_timeout(60000)
+            page.set_default_navigation_timeout(60000)
             
             # 访问首页
-            print("访问首页...")
+            print("  访问首页...")
             page.goto(
-                "https://iptv.cqshushu.com/?t=multicast&province=all&limit=6&hotel_page=1&multicast_page=1",
+                TARGET_URL,  # 使用配置的URL
                 wait_until="domcontentloaded",
-                timeout=30000
+                timeout=60000
             )
             
             time.sleep(2)
             
             # 查找所有可用的IP地址
-            print("查找所有可用IP地址...")
+            print("  查找所有可用IP地址...")
             find_result = page.evaluate("""() => {
                 try {
                     const table = document.querySelector('table');
@@ -306,7 +327,7 @@ def get_available_ips() -> List[Dict]:
                 raise Exception(f"获取IP列表失败: {find_result.get('error', '未知错误')}")
             
             available_ips = find_result.get('ips', [])
-            print(f"找到 {len(available_ips)} 个可用IP地址")
+            print(f"✅ 找到 {len(available_ips)} 个可用IP地址")
             
             browser.close()
             return available_ips
@@ -340,41 +361,68 @@ def get_m3u_url_for_ip(ip_info: Dict) -> str:
             
             context = browser.new_context(
                 viewport={'width': 1280, 'height': 720},
-                user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                user_agent=CHROME_UA,
                 ignore_https_errors=True
             )
             
             page = context.new_page()
-            page.set_default_timeout(30000)
-            page.set_default_navigation_timeout(30000)
+            page.set_default_timeout(60000)
+            page.set_default_navigation_timeout(60000)
             
-            # 访问首页
+            # ====== 第一步：访问首页 ======
+            print(f"  1. 访问首页...")
             page.goto(
-                "https://iptv.cqshushu.com/?t=multicast&province=all&limit=6&hotel_page=1&multicast_page=1",
-                wait_until="domcontentloaded",
-                timeout=30000
+                TARGET_URL,
+                wait_until="domcontentloaded",  # 改回 domcontentloaded
+                timeout=30000  # 减少到30秒
             )
+            print(f"    ✓ 首页加载完成")
             
-            time.sleep(2)
+            # 等待主要内容加载（但不过度等待）
+            try:
+                # 只等待表格出现，不等待所有网络请求
+                page.wait_for_selector('table', timeout=10000)
+                print(f"    ✓ 表格已加载")
+            except:
+                print(f"    ⚠️  表格加载较慢，继续执行")
             
-            # 点击指定的IP地址
+            # ====== 第二步：点击IP地址 ======
+            print(f"  2. 点击IP地址...")
+            
             click_result = page.evaluate("""(rowIndex) => {
                 try {
                     const table = document.querySelector('table');
+                    if (!table) {
+                        console.log('未找到表格');
+                        return {success: false, error: '未找到表格'};
+                    }
+                    
                     const tbody = table.querySelector('tbody');
+                    if (!tbody) {
+                        console.log('未找到tbody');
+                        return {success: false, error: '未找到tbody'};
+                    }
+                    
                     const rows = tbody.querySelectorAll('tr');
+                    if (!rows || rows.length === 0) {
+                        console.log('未找到行');
+                        return {success: false, error: '未找到表格行'};
+                    }
                     
                     if (rowIndex >= 0 && rowIndex < rows.length) {
                         const selectedRow = rows[rowIndex];
                         const firstCell = selectedRow.querySelector('td');
                         
                         if (firstCell) {
-                            if (firstCell.querySelector('a')) {
-                                firstCell.querySelector('a').click();
+                            console.log('找到单元格，准备点击');
+                            const link = firstCell.querySelector('a');
+                            if (link) {
+                                link.click();
+                                return {success: true};
                             } else {
                                 firstCell.click();
+                                return {success: true};
                             }
-                            return {success: true};
                         }
                     }
                     return {success: false, error: '无法点击指定行的IP'};
@@ -386,10 +434,35 @@ def get_m3u_url_for_ip(ip_info: Dict) -> str:
             if not click_result['success']:
                 raise Exception(f"点击IP地址失败: {click_result.get('error', '未知错误')}")
             
-            # 等待跳转到第二个页面
-            time.sleep(3)
+            print(f"    ✓ IP地址点击成功")
             
-            # 点击"查看频道列表"按钮
+            # 等待页面跳转 - 使用更智能的等待
+            print(f"  3. 等待页面跳转...")
+            
+            # 方法1：等待URL变化
+            try:
+                page.wait_for_url("**/t=multicast&province=**", timeout=10000)
+                print(f"    ✓ 检测到URL变化")
+            except:
+                print(f"    ⚠️  URL变化检测超时，继续等待")
+            
+            # 固定等待确保页面有足够时间加载
+            time.sleep(4)
+            
+            current_url = page.url
+            print(f"    ✓ 当前URL: {current_url}")
+            
+            # ====== 第三步：查找并点击按钮 ======
+            print(f"  4. 查找'查看频道列表'按钮...")
+            
+            # 先检查页面是否有任何按钮
+            try:
+                # 等待页面主要内容
+                page.wait_for_selector('a, button', timeout=10000)
+            except:
+                print(f"    ⚠️  按钮元素加载较慢")
+            
+            # 尝试多种选择器查找按钮
             button_found = False
             button_selectors = [
                 'a:has-text("查看频道列表")',
@@ -401,23 +474,37 @@ def get_m3u_url_for_ip(ip_info: Dict) -> str:
             
             for selector in button_selectors:
                 try:
+                    # 使用较短的超时时间，快速尝试
                     element = page.locator(selector).first
                     if element.is_visible(timeout=5000):
+                        print(f"    ✓ 找到按钮: 使用选择器 '{selector}'")
+                        
+                        # 确保按钮可点击
+                        element.scroll_into_view_if_needed()
+                        time.sleep(1)
+                        
                         element.click()
                         button_found = True
+                        print(f"    ✓ 按钮点击成功")
                         break
-                except:
+                        
+                except Exception as e:
                     continue
             
             if not button_found:
+                # 使用JavaScript直接查找
+                print("    ℹ️  尝试JavaScript查找按钮...")
                 button_clicked = page.evaluate("""() => {
                     const elements = document.querySelectorAll('a, button, span, div');
                     for (let elem of elements) {
-                        const text = elem.textContent || elem.innerText || '';
+                        const text = (elem.textContent || elem.innerText || '').trim();
                         if (text.includes('查看频道列表') || text.includes('频道列表')) {
-                            if (elem.click) {
+                            console.log('找到按钮文本:', text);
+                            try {
                                 elem.click();
                                 return true;
+                            } catch (clickError) {
+                                console.log('点击失败:', clickError);
                             }
                         }
                     }
@@ -426,35 +513,50 @@ def get_m3u_url_for_ip(ip_info: Dict) -> str:
                 
                 if button_clicked:
                     button_found = True
-            
-            if not button_found:
-                raise Exception("未找到'查看频道列表'按钮")
+                    print("    ✓ JavaScript找到并点击按钮")
+                else:
+                    raise Exception("未找到'查看频道列表'按钮")
             
             # 等待跳转到第三个页面
+            print(f"  5. 等待跳转到频道列表页...")
+            time.sleep(4)  # 固定等待4秒
+            
+            print(f"    ✓ 当前URL: {page.url}")
+            
+            # ====== 第四步：获取M3U下载链接 ======
+            print(f"  6. 查找'M3U下载'链接...")
+            
+            # 等待页面加载
             time.sleep(3)
             
-            # 获取"M3U下载"链接
-            m3u_element = page.locator('a:has-text("M3U下载")').first
+            m3u_href = None
             
-            if not m3u_element.is_visible(timeout=10000):
+            # 方法1：使用Playwright定位
+            try:
+                # 使用较短的超时
+                m3u_element = page.locator('a:has-text("M3U下载")').first
+                if m3u_element.is_visible(timeout=8000):
+                    m3u_href = m3u_element.get_attribute('href')
+                    print(f"    ✓ 找到M3U链接: {m3u_href}")
+            except:
+                pass
+            
+            # 方法2：备用方法
+            if not m3u_href:
                 m3u_href = page.evaluate("""() => {
                     const allLinks = document.querySelectorAll('a');
                     for (let link of allLinks) {
                         const text = link.textContent || link.innerText || '';
                         if (text.includes('M3U下载')) {
+                            console.log('找到M3U下载链接:', text);
                             return link.getAttribute('href');
                         }
                     }
                     return null;
                 }""")
-                
-                if not m3u_href:
-                    raise Exception("未找到'M3U下载'链接")
-            else:
-                m3u_href = m3u_element.get_attribute('href')
             
             if not m3u_href:
-                raise Exception("M3U链接href属性为空")
+                raise Exception("未找到'M3U下载'链接")
             
             # 构造完整的M3U下载链接
             if m3u_href.startswith('?'):
@@ -468,15 +570,18 @@ def get_m3u_url_for_ip(ip_info: Dict) -> str:
             
             browser.close()
             
-            print(f"✅ 获取到M3U链接: {full_m3u_url}")
+            print(f"\n✅ 获取到M3U链接: {full_m3u_url}")
             return full_m3u_url
             
         except Exception as e:
-            print(f"❌ 获取M3U链接失败: {str(e)}")
+            print(f"\n❌ 获取M3U链接失败: {str(e)}")
+            
+            # 确保浏览器关闭
             try:
                 browser.close()
             except:
                 pass
+            
             raise
 
 def extract_cctv5_url(m3u_content: str) -> Optional[str]:
@@ -500,10 +605,11 @@ def extract_cctv5_url(m3u_content: str) -> Optional[str]:
 def fetch_m3u_content(url: str) -> str:
     """从指定URL获取M3U内容"""
     print("📥 正在下载M3U文件内容...")
+    print(f"📡 下载链接: {url}")
     
     try:
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'User-Agent': CHROME_UA,  # 使用Chrome UA
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
             'Referer': 'http://iptv.cqshushu.com/',
         }
@@ -677,20 +783,44 @@ def process_m3u_content(content: str) -> str:
     def sort_key(item):
         tvg_id, _ = item
         
-        if tvg_id.startswith('CCTV'):
-            category_weight = 0
-        elif tvg_id.endswith('卫视') or tvg_id.endswith('卫視'):
-            category_weight = 1
-        else:
-            category_weight = 2
+        # 分类权重
+        # 0: CCTV数字频道 (CCTV1, CCTV2, CCTV13等)
+        # 1: 卫视频道 (湖南卫视、浙江卫视等)
+        # 2: 纯CCTV (没有数字)
+        # 3: 其他频道
         
-        if tvg_id.startswith('CCTV'):
+        if tvg_id == "CCTV":
+            # 纯CCTV频道，放在卫视后面
+            category_weight = 2
+            return (category_weight, tvg_id)
+        elif tvg_id.startswith('CCTV'):
+            # CCTV数字频道
+            category_weight = 0
             num = extract_cctv_number(tvg_id)
             return (category_weight, num, tvg_id)
+        elif tvg_id.endswith('卫视') or tvg_id.endswith('卫視'):
+            # 卫视频道
+            category_weight = 1
+            return (category_weight, tvg_id)
         else:
+            # 其他频道
+            category_weight = 3
             return (category_weight, tvg_id)
     
     sorted_items = sorted(unique_dict.items(), key=sort_key)
+    
+    # 统计各类频道数量
+    cctv_digital_count = sum(1 for tvg_id, _ in sorted_items if tvg_id.startswith('CCTV') and tvg_id != "CCTV")
+    cctv_only_count = sum(1 for tvg_id, _ in sorted_items if tvg_id == "CCTV")
+    weishi_count = sum(1 for tvg_id, _ in sorted_items if tvg_id.endswith('卫視') or tvg_id.endswith('卫视'))
+    other_count = len(sorted_items) - cctv_digital_count - cctv_only_count - weishi_count
+    
+    print(f"📈 排序结果：CCTV数字频道 {cctv_digital_count} 个，纯CCTV {cctv_only_count} 个，卫视频道 {weishi_count} 个，其他频道 {other_count} 个")
+    
+    # 显示排序后的前几个频道
+    print(f"📺 排序后的前5个频道:")
+    for i, (tvg_id, _) in enumerate(sorted_items[:5]):
+        print(f"  {i+1}. {tvg_id}")
     
     # 构建结果
     if first_line:
@@ -704,10 +834,12 @@ def process_m3u_content(content: str) -> str:
 # ==================== 主函数 ====================
 def main():
     """主函数"""
-    print("="*60)
+    print("="*70)
     print("🎬 IPTV列表自动化处理脚本 - 带IP检查功能")
+    print("="*70)
+    print(f"📡 目标网站: {TARGET_URL}")
     print(f"🕒 开始时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print("="*60)
+    print("="*70)
     
     try:
         # 第一步：获取所有可用IP
@@ -800,9 +932,9 @@ def main():
                         print(f"  {count+1}. {channel_name}")
                         count += 1
         
-        print("\n" + "="*60)
+        print("\n" + "="*70)
         print("✅ 脚本执行完成！")
-        print("="*60)
+        print("="*70)
         
     except Exception as e:
         print(f"\n❌ 脚本执行失败: {str(e)}")
