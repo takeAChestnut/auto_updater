@@ -32,6 +32,179 @@ TARGET_URL = "https://iptv.cqshushu.com/?t=multicast&province=gd&limit=6&hotel_p
 CHROME_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 
 # ==================== IP检查功能 ====================
+def test_ip_download_speed(url: str, test_duration: int = 3) -> Tuple[bool, float]:
+    """测试IP下载速度，返回(是否成功, 速度KB/s)"""
+    print(f"  测试下载速度: {url}")
+    
+    temp_file = "test_speed.tmp"
+    speed_kb = 0.0
+    
+    try:
+        # 检查curl是否可用
+        try:
+            subprocess.run(['curl', '--version'], 
+                          capture_output=True, 
+                          check=True,
+                          timeout=2)
+        except:
+            print("    ⚠️ 未找到curl，跳过下载测试")
+            return False, 0.0
+        
+        # 构建curl命令
+        command = [
+            'curl',
+            '--silent',
+            '--show-error',
+            '--max-time', str(test_duration + 5),
+            '--connect-timeout', '5',
+            '--retry', '0',
+            '--user-agent', CHROME_UA,
+            '--header', 'Accept: */*',
+            '--header', 'Connection: close',
+            '--output', temp_file,
+            url
+        ]
+        
+        # 启动curl进程并记录开始时间
+        start_time = time.time()
+        process = subprocess.Popen(command)
+        
+        # 等待指定时间后终止
+        try:
+            time.sleep(test_duration)
+            process.terminate()
+            process.wait(timeout=2)
+        except:
+            try:
+                process.kill()
+            except:
+                pass
+        
+        # 记录结束时间
+        elapsed = time.time() - start_time
+        
+        # 检查下载的文件
+        if os.path.exists(temp_file):
+            file_size = os.path.getsize(temp_file)
+            
+            if file_size > 0:
+                # 计算下载速度
+                speed_kb = file_size / elapsed / 1024
+                
+                # 检查是否为有效的流媒体数据
+                is_valid_stream = False
+                try:
+                    with open(temp_file, 'rb') as f:
+                        # 读取前几个包检查TS流
+                        data = f.read(1024)
+                        if len(data) >= 188 and data[0] == 0x47:  # TS包头
+                            is_valid_stream = True
+                except:
+                    pass
+                
+                if is_valid_stream:
+                    print(f"    ✓ 下载成功: {file_size:,} 字节，速度: {speed_kb:.1f} KB/s")
+                else:
+                    print(f"    ⚠️ 下载完成但非流媒体数据: {file_size:,} 字节，速度: {speed_kb:.1f} KB/s")
+                    speed_kb = speed_kb * 0.5  # 非流媒体数据，速度减半
+                
+                # 清理临时文件
+                try:
+                    os.remove(temp_file)
+                except:
+                    pass
+                
+                return True, speed_kb
+            else:
+                print(f"    ✗ 下载文件为空")
+        else:
+            print(f"    ✗ 未下载到文件")
+            
+        return False, 0.0
+        
+    except Exception as e:
+        print(f"    ✗ 下载测试异常: {str(e)}")
+        # 清理临时文件
+        try:
+            if os.path.exists(temp_file):
+                os.remove(temp_file)
+        except:
+            pass
+        return False, 0.0
+
+def test_all_ips_speed(available_ips: List[Dict]) -> List[Dict]:
+    """测试所有IP的下载速度并排序"""
+    print("\n📊 测试所有IP的下载速度")
+    print("-"*60)
+    
+    tested_ips = []
+    
+    for ip_info in available_ips:
+        ip_with_port = ip_info['ip']
+        print(f"\n测试IP: {ip_with_port}")
+        
+        try:
+            # 1. 获取该IP的M3U链接
+            print(f"  1. 获取M3U链接...")
+            m3u_url = get_m3u_url_for_ip(ip_info)
+            
+            # 2. 下载M3U内容
+            print(f"  2. 下载M3U内容...")
+            m3u_content = fetch_m3u_content(m3u_url)
+            
+            # 3. 提取CCTV5地址作为测试目标
+            print(f"  3. 提取测试地址...")
+            test_url = extract_cctv5_url(m3u_content)
+            
+            if not test_url:
+                # 如果没有CCTV5，尝试提取第一个可用地址
+                lines = m3u_content.strip().split('\n')
+                for i, line in enumerate(lines):
+                    if line.startswith('#EXTINF:') and i + 1 < len(lines):
+                        if not lines[i + 1].startswith('#'):
+                            test_url = lines[i + 1].strip()
+                            print(f"    ⚠️ 未找到CCTV5，使用第一个频道测试: {test_url[:60]}...")
+                            break
+            
+            if test_url:
+                # 4. 测试下载速度
+                print(f"  4. 测试下载速度(3秒)...")
+                success, speed_kb = test_ip_download_speed(test_url, test_duration=3)
+                
+                if success:
+                    # 保存测试结果
+                    ip_result = ip_info.copy()
+                    ip_result['m3u_url'] = m3u_url
+                    ip_result['test_url'] = test_url
+                    ip_result['speed_kb'] = speed_kb
+                    ip_result['success'] = True
+                    tested_ips.append(ip_result)
+                else:
+                    print(f"    ✗ 下载测试失败")
+            else:
+                print(f"    ✗ 未找到测试地址")
+                
+        except Exception as e:
+            print(f"    ✗ 处理IP {ip_with_port} 时出错: {str(e)}")
+            continue
+    
+    # 按下载速度排序（从高到低）
+    tested_ips.sort(key=lambda x: x.get('speed_kb', 0), reverse=True)
+    
+    print(f"\n📊 速度测试结果:")
+    print("-"*50)
+    if tested_ips:
+        for i, ip_result in enumerate(tested_ips[:10]):  # 只显示前10个
+            speed_mb = ip_result['speed_kb'] / 1024
+            print(f"{i+1:2d}. {ip_result['ip']:20s} 速度: {ip_result['speed_kb']:7.1f} KB/s ({speed_mb:.2f} MB/s)")
+        
+        if len(tested_ips) > 10:
+            print(f"... 还有 {len(tested_ips) - 10} 个IP未显示")
+    else:
+        print("❌ 没有可用的IP")
+    
+    return tested_ips
+
 def test_cctv5_url(cctv5_url: str) -> bool:
     """测试CCTV5地址的可用性"""
     print(f"\n🎯 测试CCTV5地址: {cctv5_url}")
@@ -855,46 +1028,22 @@ def main():
         for i, ip_info in enumerate(available_ips, 1):
             print(f"  {i}. IP: {ip_info['ip']}, 节目数: {ip_info['programCount']}, 状态: {ip_info['status']}")
         
-        # 第二步：逐个测试IP，直到找到CCTV5可用的IP
-        print("\n📋 第二步：测试IP的CCTV5地址可用性")
+        # 第二步：测试所有IP的下载速度并选择最快的
+        print("\n📋 第二步：测试所有IP的下载速度")
         print("-"*60)
         
-        selected_ip = None
-        selected_m3u_url = None
+        tested_ips = test_all_ips_speed(available_ips)
         
-        for ip_info in available_ips:
-            ip_with_port = ip_info['ip']
-            print(f"\n测试IP: {ip_with_port}")
-            
-            try:
-                # 获取该IP的M3U链接
-                m3u_url = get_m3u_url_for_ip(ip_info)
-                
-                # 下载M3U内容
-                m3u_content = fetch_m3u_content(m3u_url)
-                
-                # 提取CCTV5地址
-                cctv5_url = extract_cctv5_url(m3u_content)
-                
-                if cctv5_url:
-                    # 测试CCTV5地址
-                    if test_cctv5_url(cctv5_url):
-                        selected_ip = ip_info
-                        selected_m3u_url = m3u_url
-                        print(f"\n✅ 找到可用IP: {ip_with_port}")
-                        break
-                    else:
-                        print(f"❌ IP {ip_with_port} 的CCTV5地址不可用，尝试下一个IP")
-                else:
-                    print(f"⚠️  IP {ip_with_port} 的M3U中没有CCTV5地址，尝试下一个IP")
-                    
-            except Exception as e:
-                print(f"❌ 处理IP {ip_with_port} 时出错: {str(e)}，尝试下一个IP")
-                continue
-        
-        if not selected_ip:
-            print("\n❌ 所有IP的CCTV5地址都不可用")
+        if not tested_ips:
+            print("❌ 所有IP测试都失败")
             sys.exit(1)
+        
+        # 选择速度最快的IP
+        selected_ip = tested_ips[0]
+        selected_m3u_url = selected_ip['m3u_url']
+        
+        print(f"\n🏆 选择速度最快的IP: {selected_ip['ip']}")
+        print(f"   下载速度: {selected_ip['speed_kb']:.1f} KB/s (≈{selected_ip['speed_kb']/1024:.2f} MB/s)")
         
         # 第三步：处理选中的IP的M3U内容
         print("\n📋 第三步：处理M3U内容")
@@ -917,6 +1066,7 @@ def main():
         print(f"\n✅ 处理完成！")
         print(f"📁 输出文件: {output_file}")
         print(f"📺 频道数量: {channel_count} 个")
+        print(f"🚀 使用IP: {selected_ip['ip']} (速度: {selected_ip['speed_kb']:.1f} KB/s)")
         
         # 预览前10个频道
         print("\n📺 前10个频道预览:")
