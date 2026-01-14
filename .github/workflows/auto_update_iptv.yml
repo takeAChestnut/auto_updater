@@ -26,7 +26,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-          #cache: 'pip'  # 启用pip缓存，加速后续安装
       
       # 3. 安装依赖（包括playwright和requests）
       - name: Install dependencies
@@ -42,27 +41,31 @@ jobs:
           python process_iptv.py
           echo "生成的CN.m3u内容预览："
           head -30 CN.m3u
+          echo ""
+          echo "生成的M3U链接文件预览："
+          head -10 available_m3u_urls.txt
       
       # 5. 检查文件是否有变化
       - name: Check for changes
         id: changes
         run: |
           git status
-          if git diff --quiet CN.m3u 2>/dev/null || [ ! -f CN.m3u ]; then
+          changed_files=$(git status --porcelain | grep -E "CN\.m3u|available_m3u_urls\.txt" | wc -l)
+          if [ "$changed_files" -gt 0 ]; then
+            echo "检测到IPTV文件有更新"
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
             echo "没有检测到变化"
             echo "has_changes=false" >> $GITHUB_OUTPUT
-          else
-            echo "检测到CN.m3u文件有更新"
-            echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
       
       # 6. 提交并推送更改（仅在文件有变化时）
       - name: Commit and push changes
         if: steps.changes.outputs.has_changes == 'true'
         run: |
-          git config user.name "takeAChestnut"
-          git config user.email "1432726299@qq.com"
-          git add CN.m3u
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@github.com"
+          git add CN.m3u available_m3u_urls.txt
           git commit -m "🔄 自动更新IPTV列表 [$(date +'%Y-%m-%d %H:%M:%S')]"
           git push
         env:
@@ -71,4 +74,4 @@ jobs:
       # 7. 没有变化时的通知
       - name: No changes notification
         if: steps.changes.outputs.has_changes == 'false'
-        run: echo "✅ CN.m3u文件无变化，跳过提交。"
+        run: echo "✅ IPTV文件无变化，跳过提交。"
