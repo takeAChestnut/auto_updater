@@ -7,6 +7,8 @@ cd ~/work/auto_updater || exit 1
 # 激活Python环境（如果需要，例如使用virtualenv）
 # source /path/to/venv/bin/activate
 
+git pull
+
 # 执行Python脚本
 python iptv-test.py
 
