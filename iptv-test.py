@@ -9,7 +9,7 @@ IPTV M3U链接速度测试脚本
 3. 对每个M3U链接进行CCTV5速度测试
 4. 选择速度最快的链接
 5. 下载并处理M3U内容
-6. 保存为CN.m3u
+6. 保存为CN-fast.m3u
 """
 
 import re
@@ -597,7 +597,7 @@ def main():
         processed_content = process_m3u_content(final_m3u_content)
         
         # 保存到文件
-        output_file = "CN.m3u"
+        output_file = "CN-fast.m3u"
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write(processed_content)
         
@@ -632,4 +632,5 @@ def main():
         sys.exit(1)
 
 if __name__ == "__main__":
+
     main()
