@@ -236,7 +236,7 @@ def test_m3u_url_speed(m3u_url: str) -> Dict:
             
             # 3. 测试下载速度
             print(f"  3. 测试下载速度(3秒)...")
-            success, speed_kb = test_ip_download_speed(test_url, test_duration=3)
+            success, speed_kb = test_ip_download_speed(test_url, test_duration=10)
             
             if success:
                 result['success'] = True
@@ -634,3 +634,4 @@ def main():
 if __name__ == "__main__":
 
     main()
+
