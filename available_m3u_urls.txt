@@ -2,4 +2,3 @@ https://iptv.cqshushu.com/?s=106.59.2.116:55555&t=multicast&channels=1&download=
 https://iptv.cqshushu.com/?s=113.119.24.164:58888&t=multicast&channels=1&download=m3u
 https://iptv.cqshushu.com/?s=113.119.26.124:58888&t=multicast&channels=1&download=m3u
 https://iptv.cqshushu.com/?s=182.121.47.214:8090&t=multicast&channels=1&download=m3u
-https://iptv.cqshushu.com/?s=117.39.37.230:4022&t=multicast&channels=1&download=m3u
