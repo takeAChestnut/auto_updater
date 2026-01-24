@@ -10,6 +10,8 @@ IPTV M3U链接速度测试脚本
 4. 选择速度最快的链接
 5. 下载并处理M3U内容
 6. 保存为CN-fast.m3u
+
+新增：请求间隔等待时间，避免服务器压力
 """
 
 import re
@@ -19,6 +21,7 @@ import time
 import os
 import requests
 import subprocess
+import random
 from typing import List, Dict, Tuple, Optional
 from datetime import datetime
 from urllib.parse import urlparse
@@ -33,6 +36,126 @@ LOCAL_M3U_URLS_FILE = "available_m3u_urls.txt"
 # Chrome User-Agent
 CHROME_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 
+# 请求间隔配置（单位：秒）
+REQUEST_DELAY = {
+    'min': 2,      # 最小延迟
+    'max': 5,      # 最大延迟
+    'jitter': True # 是否添加随机抖动
+}
+
+# 重试配置
+RETRY_CONFIG = {
+    'max_retries': 3,      # 最大重试次数
+    'retry_delay': 5,      # 重试延迟（秒）
+    'backoff_factor': 1.5  # 退避因子
+}
+
+# 全局变量记录上次请求时间
+_last_request_time = 0
+
+# ==================== 请求工具函数 ====================
+def wait_for_next_request():
+    """等待到下一次请求的合适时间"""
+    global _last_request_time
+    
+    current_time = time.time()
+    if _last_request_time > 0:
+        # 计算已经过去的时间
+        elapsed = current_time - _last_request_time
+        
+        # 计算需要等待的时间
+        if REQUEST_DELAY['jitter']:
+            # 添加随机抖动，避免固定的时间间隔
+            delay = random.uniform(REQUEST_DELAY['min'], REQUEST_DELAY['max'])
+        else:
+            delay = (REQUEST_DELAY['min'] + REQUEST_DELAY['max']) / 2
+        
+        # 如果距离上次请求时间不足延迟时间，则等待
+        if elapsed < delay:
+            wait_time = delay - elapsed
+            if wait_time > 0.1:  # 只等待有意义的时间
+                print(f"⏳ 请求间隔等待: {wait_time:.1f}秒...")
+                time.sleep(wait_time)
+    
+    _last_request_time = time.time()
+
+def safe_request_with_retry(url: str, method: str = 'GET', **kwargs) -> Optional[requests.Response]:
+    """
+    安全的请求函数，包含重试机制和间隔等待
+    
+    Args:
+        url: 请求URL
+        method: HTTP方法
+        **kwargs: 传递给requests的参数
+    
+    Returns:
+        Response对象或None（失败时）
+    """
+    headers = kwargs.get('headers', {})
+    if 'User-Agent' not in headers:
+        headers['User-Agent'] = CHROME_UA
+    
+    kwargs['headers'] = headers
+    
+    # 默认超时时间
+    if 'timeout' not in kwargs:
+        kwargs['timeout'] = (10, 30)
+    
+    for retry in range(RETRY_CONFIG['max_retries']):
+        try:
+            # 等待到合适的请求时间
+            wait_for_next_request()
+            
+            if retry > 0:
+                print(f"🔄 第 {retry + 1}/{RETRY_CONFIG['max_retries']} 次重试...")
+                # 重试时增加延迟
+                retry_delay = RETRY_CONFIG['retry_delay'] * (RETRY_CONFIG['backoff_factor'] ** (retry - 1))
+                if retry_delay > 0:
+                    print(f"⏳ 重试等待: {retry_delay:.1f}秒...")
+                    time.sleep(retry_delay)
+            
+            response = requests.request(method, url, **kwargs)
+            response.raise_for_status()
+            
+            # 记录成功的请求时间
+            _last_request_time = time.time()
+            
+            return response
+            
+        except requests.exceptions.Timeout:
+            print(f"⏰ 请求超时 (尝试 {retry + 1}/{RETRY_CONFIG['max_retries']})")
+            if retry == RETRY_CONFIG['max_retries'] - 1:
+                print(f"❌ 请求 {url} 超时，已达到最大重试次数")
+                return None
+                
+        except requests.exceptions.ConnectionError as e:
+            print(f"🔌 连接错误: {e} (尝试 {retry + 1}/{RETRY_CONFIG['max_retries']})")
+            if retry == RETRY_CONFIG['max_retries'] - 1:
+                print(f"❌ 连接 {url} 失败，已达到最大重试次数")
+                return None
+                
+        except requests.exceptions.HTTPError as e:
+            status_code = e.response.status_code if hasattr(e, 'response') else '未知'
+            print(f"🌐 HTTP错误 {status_code}: {e} (尝试 {retry + 1}/{RETRY_CONFIG['max_retries']})")
+            
+            # 如果是429（请求过多）或503（服务不可用），增加等待时间
+            if hasattr(e, 'response') and e.response.status_code in [429, 503]:
+                wait_time = RETRY_CONFIG['retry_delay'] * 2  # 双倍等待时间
+                print(f"⏳ 服务器限制，等待 {wait_time} 秒...")
+                time.sleep(wait_time)
+            
+            if retry == RETRY_CONFIG['max_retries'] - 1:
+                print(f"❌ HTTP请求失败，已达到最大重试次数")
+                return None
+                
+        except Exception as e:
+            print(f"⚠️ 请求异常: {e} (尝试 {retry + 1}/{RETRY_CONFIG['max_retries']})")
+            if retry == RETRY_CONFIG['max_retries'] - 1:
+                print(f"❌ 请求异常，已达到最大重试次数")
+                return None
+    
+    return None
+
 # ==================== 文件下载和处理函数 ====================
 def download_m3u_urls_from_github() -> List[str]:
     """从GitHub下载M3U链接文件并提取所有URL"""
@@ -40,13 +163,13 @@ def download_m3u_urls_from_github() -> List[str]:
     print(f"📡 文件URL: {GITHUB_M3U_URLS_FILE}")
     
     try:
-        # 下载文件
-        headers = {
-            'User-Agent': CHROME_UA,
-        }
+        # 使用安全的请求函数下载文件
+        response = safe_request_with_retry(GITHUB_M3U_URLS_FILE)
         
-        response = requests.get(GITHUB_M3U_URLS_FILE, headers=headers, timeout=30)
-        response.raise_for_status()
+        if response is None:
+            print("❌ 下载M3U链接文件失败")
+            # 尝试从本地文件读取
+            return read_local_m3u_urls()
         
         # 保存到本地文件
         with open(LOCAL_M3U_URLS_FILE, 'w', encoding='utf-8') as f:
@@ -74,35 +197,40 @@ def download_m3u_urls_from_github() -> List[str]:
         return urls
         
     except Exception as e:
-        print(f"❌ 下载M3U链接文件失败: {str(e)}")
-        
-        # 尝试从本地文件读取（如果存在）
-        if os.path.exists(LOCAL_M3U_URLS_FILE):
-            print("⚠️  尝试从本地文件读取...")
-            try:
-                with open(LOCAL_M3U_URLS_FILE, 'r', encoding='utf-8') as f:
-                    content = f.read()
-                
-                urls = []
-                lines = content.strip().split('\n')
-                
-                for line in lines:
-                    line = line.strip()
-                    if line and line.startswith('http'):
-                        urls.append(line)
-                
-                if urls:
-                    print(f"✅ 从本地文件读取到 {len(urls)} 个M3U链接")
-                    return urls
-            except Exception as e2:
-                print(f"❌ 读取本地文件失败: {str(e2)}")
-        
-        return []
+        print(f"❌ 处理M3U链接文件失败: {str(e)}")
+        return read_local_m3u_urls()
+
+def read_local_m3u_urls() -> List[str]:
+    """从本地文件读取M3U链接"""
+    if os.path.exists(LOCAL_M3U_URLS_FILE):
+        print("⚠️  尝试从本地文件读取...")
+        try:
+            with open(LOCAL_M3U_URLS_FILE, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            urls = []
+            lines = content.strip().split('\n')
+            
+            for line in lines:
+                line = line.strip()
+                if line and line.startswith('http'):
+                    urls.append(line)
+            
+            if urls:
+                print(f"✅ 从本地文件读取到 {len(urls)} 个M3U链接")
+                return urls
+        except Exception as e2:
+            print(f"❌ 读取本地文件失败: {str(e2)}")
+    
+    return []
 
 # ==================== 速度测试函数 ====================
 def test_ip_download_speed(url: str, test_duration: int = 3) -> Tuple[bool, float]:
     """测试IP下载速度，返回(是否成功, 速度KB/s)"""
     print(f"  测试下载速度: {url}")
+    
+    # 在速度测试前也添加等待
+    wait_for_next_request()
     
     temp_file = "test_speed.tmp"
     speed_kb = 0.0
@@ -276,6 +404,12 @@ def test_all_m3u_urls_speed(m3u_urls: List[str]) -> List[Dict]:
                                 key=lambda x: x['speed_kb'], reverse=True)
             rank = temp_sorted.index(result) + 1
             print(f"    📈 当前排名: 第{rank}位 (速度: {result['speed_kb']:.1f} KB/s)")
+        
+        # 如果不是最后一个，添加额外延迟避免压力过大
+        if i < len(m3u_urls):
+            extra_delay = random.uniform(1, 3)
+            print(f"⏳ 测试间隔等待: {extra_delay:.1f}秒...")
+            time.sleep(extra_delay)
     
     # 过滤出成功的测试结果并按速度排序
     successful_results = [r for r in tested_results if r['success']]
@@ -314,8 +448,11 @@ def fetch_m3u_content(url: str) -> str:
             'Referer': 'http://iptv.cqshushu.com/',
         }
         
-        response = requests.get(url, headers=headers, timeout=(10, 30))
-        response.raise_for_status()
+        # 使用安全的请求函数
+        response = safe_request_with_retry(url, headers=headers, timeout=(10, 30))
+        
+        if response is None:
+            raise Exception(f"无法获取M3U内容，URL: {url}")
         
         content = response.text
         print(f"✅ 成功获取内容，长度: {len(content)} 字符")
@@ -555,6 +692,8 @@ def main():
     print("🎬 IPTV M3U链接速度测试脚本")
     print("="*70)
     print(f"📡 来源: {GITHUB_M3U_URLS_FILE}")
+    print(f"⏱️  请求间隔: {REQUEST_DELAY['min']}-{REQUEST_DELAY['max']}秒")
+    print(f"🔄 最大重试次数: {RETRY_CONFIG['max_retries']}")
     print(f"🕒 开始时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("="*70)
     
@@ -632,6 +771,4 @@ def main():
         sys.exit(1)
 
 if __name__ == "__main__":
-
     main()
-
