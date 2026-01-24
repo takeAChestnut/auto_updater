@@ -18,6 +18,7 @@ import sys
 import socket
 import time
 import os
+import random
 import requests
 import subprocess
 from typing import List, Dict, Tuple, Optional
@@ -37,6 +38,11 @@ AVAILABLE_IPS_FILE = "available_m3u_urls.txt"  # 纯文本文件，每行一个U
 
 # M3U下载链接模板
 M3U_URL_TEMPLATE = "https://iptv.cqshushu.com/?s={ip_port}&t=multicast&channels=1&download=m3u"
+
+# 请求配置
+REQUEST_DELAY = 2.0  # 基础请求间隔（秒）
+REQUEST_RETRY_COUNT = 3  # 重试次数
+REQUEST_TIMEOUT = 15  # 请求超时时间（秒）
 
 # ==================== M3U链接保存函数 ====================
 def save_m3u_urls_to_file(available_ips: List[Dict]):
@@ -479,7 +485,7 @@ def test_all_ips_speed(available_ips: List[Dict]) -> List[Dict]:
         try:
             # 1. 下载M3U内容
             print(f"  1. 下载M3U内容...")
-            m3u_content = fetch_m3u_content(m3u_url)
+            m3u_content = fetch_m3u_content_with_retry(m3u_url)
             
             # 2. 提取CCTV5地址作为测试目标
             print(f"  2. 提取测试地址...")
@@ -532,6 +538,82 @@ def test_all_ips_speed(available_ips: List[Dict]) -> List[Dict]:
         print("❌ 没有可用的IP")
     
     return tested_ips
+
+def fetch_m3u_content_with_retry(url: str, max_retries: int = REQUEST_RETRY_COUNT) -> str:
+    """从指定URL获取M3U内容，带重试机制"""
+    for attempt in range(max_retries):
+        try:
+            # 添加随机延迟，避免请求过于频繁
+            delay = REQUEST_DELAY + random.uniform(0, 1.0)  # 2-3秒随机延迟
+            if attempt > 0:
+                print(f"    ⏳ 第{attempt+1}次重试，等待{delay:.1f}秒...")
+            time.sleep(delay)
+            
+            return fetch_m3u_content(url)
+            
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 429:  # Too Many Requests
+                if attempt < max_retries - 1:
+                    # 429错误，增加等待时间
+                    wait_time = (attempt + 1) * 5 + random.uniform(0, 3)
+                    print(f"    ⚠️  请求过于频繁，等待{wait_time:.1f}秒后重试...")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    raise Exception(f"请求过于频繁，已达到最大重试次数")
+            else:
+                raise
+        except Exception as e:
+            if attempt < max_retries - 1:
+                wait_time = (attempt + 1) * 2 + random.uniform(0, 1)
+                print(f"    ⚠️  请求失败，等待{wait_time:.1f}秒后重试...")
+                time.sleep(wait_time)
+                continue
+            else:
+                raise
+
+def fetch_m3u_content(url: str) -> str:
+    """从指定URL获取M3U内容"""
+    print("📥 正在下载M3U文件内容...")
+    print(f"📡 下载链接: {url}")
+    
+    try:
+        headers = {
+            'User-Agent': CHROME_UA,
+            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+            'Referer': 'https://iptv.cqshushu.com/',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+        }
+        
+        # 使用会话保持
+        session = requests.Session()
+        session.headers.update(headers)
+        
+        response = session.get(url, timeout=REQUEST_TIMEOUT)
+        response.raise_for_status()
+        
+        content = response.text
+        print(f"✅ 成功获取内容，长度: {len(content)} 字符")
+        
+        if '#EXTM3U' not in content:
+            print("⚠️ 警告：下载的内容可能不是标准M3U格式")
+        
+        return content
+        
+    except requests.exceptions.Timeout:
+        raise Exception(f"请求超时（{REQUEST_TIMEOUT}秒）")
+    except requests.exceptions.ConnectionError:
+        raise Exception("连接错误")
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code == 429:
+            raise Exception(f"请求过于频繁（429错误），请稍后再试")
+        else:
+            raise Exception(f"HTTP错误 {e.response.status_code}: {e.response.reason}")
+    except Exception as e:
+        raise Exception(f"获取M3U内容失败: {e}")
 
 def test_cctv5_url(cctv5_url: str) -> bool:
     """测试CCTV5地址的可用性"""
@@ -883,33 +965,6 @@ def extract_cctv5_url(m3u_content: str) -> Optional[str]:
     return None
 
 # ==================== M3U处理部分 ====================
-def fetch_m3u_content(url: str) -> str:
-    """从指定URL获取M3U内容"""
-    print("📥 正在下载M3U文件内容...")
-    print(f"📡 下载链接: {url}")
-    
-    try:
-        headers = {
-            'User-Agent': CHROME_UA,  # 使用Chrome UA
-            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-            'Referer': 'https://iptv.cqshushu.com/',
-        }
-        
-        response = requests.get(url, headers=headers, timeout=(10, 30))
-        response.raise_for_status()
-        
-        content = response.text
-        print(f"✅ 成功获取内容，长度: {len(content)} 字符")
-        
-        if '#EXTM3U' not in content:
-            print("⚠️ 警告：下载的内容可能不是标准M3U格式")
-        
-        return content
-        
-    except Exception as e:
-        print(f"❌ 获取M3U内容失败: {e}")
-        raise
-
 def clean_cctv_name(name: str, name_type: str = "tvg_id") -> str:
     """统一清理CCTV相关名称"""
     if not name:
@@ -1119,7 +1174,7 @@ def main():
     print("🎬 IPTV列表自动化处理脚本 - 带IP检查功能（优化版）")
     print("="*70)
     print(f"📡 目标网站: {TARGET_URL}")
-    print(f"🕒 开始时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"🕒 开始时间: {datetime.now().strftime('%Y-%m-d %H:%M:%S')}")
     print("="*70)
     
     try:
@@ -1173,7 +1228,7 @@ def main():
         print(f"使用IP: {selected_ip.get('full_ip_port', selected_ip['ip'])}")
         
         # 重新获取M3U内容（确保是最新的）
-        final_m3u_content = fetch_m3u_content(selected_m3u_url)
+        final_m3u_content = fetch_m3u_content_with_retry(selected_m3u_url)
         
         # 处理M3U内容
         processed_content = process_m3u_content(final_m3u_content)
