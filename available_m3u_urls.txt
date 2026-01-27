@@ -1,5 +1,6 @@
-https://iptv.cqshushu.com/?s=58.63.64.216:8888&t=multicast&channels=1&download=m3u
-https://iptv.cqshushu.com/?s=36.27.24.89:8888&t=multicast&channels=1&download=m3u
-https://iptv.cqshushu.com/?s=222.208.4.22:8888&t=multicast&channels=1&download=m3u
-https://iptv.cqshushu.com/?s=222.208.4.22:8888&t=multicast&channels=1&download=m3u
-https://iptv.cqshushu.com/?s=117.139.15.5:8888&t=multicast&channels=1&download=m3u
+https://iptv.cqshushu.com/?s=_gbvw2hlPTEdTJk6ggDTsw&t=multicast&channels=1&download=m3u
+https://iptv.cqshushu.com/?s=yc5InRQgTt0xbpFpjYWSyg&t=multicast&channels=1&download=m3u
+https://iptv.cqshushu.com/?s=3f3hp3vakYJQHYzyvUgDSg&t=multicast&channels=1&download=m3u
+https://iptv.cqshushu.com/?s=2zEW1yiImY7aO-xtP6oQnA&t=multicast&channels=1&download=m3u
+https://iptv.cqshushu.com/?s=YP-_kSg8wGC4wV5Oa_3Cwg&t=multicast&channels=1&download=m3u
+https://iptv.cqshushu.com/?s=7zKk8aQCay9Mi0mprNu6Mw&t=multicast&channels=1&download=m3u
