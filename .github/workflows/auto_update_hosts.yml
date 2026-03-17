@@ -1,0 +1,57 @@
+name: Auto Update Hosts File
+
+on:
+  schedule:
+    # 每天UTC时间2点运行（北京时间10点）
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 允许手动触发
+  push:
+    paths:
+      - 'update_hosts.py'
+      - '.github/workflows/auto_update_hosts.yml'
+
+jobs:
+  update-hosts:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. 检出仓库
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      # 2. 设置Python环境
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      
+      # 3. 运行hosts更新脚本
+      - name: Run hosts update script
+        run: |
+          python update_hosts.py
+          echo "生成的hosts文件预览："
+          head -20 hosts
+      
+      # 4. 检查hosts文件是否有变化
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet hosts; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+      
+      # 5. 提交并推送更改（仅在文件有变化时）
+      - name: Commit and push changes
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@github.com"
+          git add hosts
+          git commit -m "🔄 自动更新hosts文件 [$(date +'%Y-%m-%d %H:%M:%S')]"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
