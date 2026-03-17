@@ -3,7 +3,7 @@ name: Auto Update Hosts File
 on:
   schedule:
     # 每天UTC时间2点运行（北京时间10点）
-    - cron: '0 2 * * *'
+    - cron: '0 0 * * *'
   workflow_dispatch: # 允许手动触发
   push:
     paths:
@@ -42,25 +42,46 @@ jobs:
       - name: Check for changes
         id: changes
         run: |
-          # 检查文件是否存在并比较变化
+          # 检查文件是否有变化（包括未跟踪的文件）
           has_changes=false
           
           # 检查hosts文件
           if [ ! -f hosts ]; then
             echo "hosts文件不存在，将创建新文件"
             has_changes=true
-          elif ! git diff --quiet hosts; then
-            echo "hosts文件有变化"
-            has_changes=true
+          else
+            # 检查文件是否被git跟踪
+            if git ls-files --error-unmatch hosts >/dev/null 2>&1; then
+              # 文件已被git跟踪，检查是否有修改
+              if ! git diff --quiet hosts; then
+                echo "hosts文件有修改"
+                has_changes=true
+              else
+                echo "hosts文件无修改"
+              fi
+            else
+              # 文件未被git跟踪（这是关键！）
+              echo "hosts文件是未跟踪的新文件"
+              has_changes=true
+            fi
           fi
           
           # 检查adguard-hosts.txt文件
           if [ ! -f adguard-hosts.txt ]; then
             echo "adguard-hosts.txt文件不存在，将创建新文件"
             has_changes=true
-          elif ! git diff --quiet adguard-hosts.txt; then
-            echo "adguard-hosts.txt文件有变化"
-            has_changes=true
+          else
+            if git ls-files --error-unmatch adguard-hosts.txt >/dev/null 2>&1; then
+              if ! git diff --quiet adguard-hosts.txt; then
+                echo "adguard-hosts.txt文件有修改"
+                has_changes=true
+              else
+                echo "adguard-hosts.txt文件无修改"
+              fi
+            else
+              echo "adguard-hosts.txt文件是未跟踪的新文件"
+              has_changes=true
+            fi
           fi
           
           echo "has_changes=$has_changes" >> $GITHUB_OUTPUT
@@ -71,7 +92,17 @@ jobs:
             echo "文件无变化，跳过提交"
           fi
       
-      # 5. 提交并推送更改（仅在文件有变化时）
+      # 5. 显示git状态（调试用）
+      - name: Show git status
+        if: always()
+        run: |
+          echo "=== Git Status ==="
+          git status
+          echo ""
+          echo "=== Untracked Files ==="
+          git ls-files --others --exclude-standard
+      
+      # 6. 提交并推送更改（仅在文件有变化时）
       - name: Commit and push changes
         if: steps.changes.outputs.has_changes == 'true'
         run: |
@@ -83,7 +114,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      # 6. 没有变化时的通知
+      # 7. 没有变化时的通知
       - name: No changes notification
         if: steps.changes.outputs.has_changes == 'false'
         run: echo "✅ hosts文件无变化，跳过提交。"
