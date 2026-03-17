@@ -3,7 +3,7 @@ name: Auto Update Hosts File
 on:
   schedule:
     # 每天UTC时间2点运行（北京时间10点）
-    - cron: '0 0 * * *'
+    - cron: '0 2 * * *'
   workflow_dispatch: # 允许手动触发
   push:
     paths:
@@ -32,16 +32,43 @@ jobs:
         run: |
           python update_hosts.py
           echo "生成的hosts文件预览："
+          echo "=== hosts文件 ==="
           head -20 hosts
+          echo ""
+          echo "=== adguard-hosts.txt文件 ==="
+          head -20 adguard-hosts.txt
       
-      # 4. 检查hosts文件是否有变化
+      # 4. 检查文件是否有变化
       - name: Check for changes
         id: changes
         run: |
-          if git diff --quiet hosts; then
-            echo "has_changes=false" >> $GITHUB_OUTPUT
+          # 检查文件是否存在并比较变化
+          has_changes=false
+          
+          # 检查hosts文件
+          if [ ! -f hosts ]; then
+            echo "hosts文件不存在，将创建新文件"
+            has_changes=true
+          elif ! git diff --quiet hosts; then
+            echo "hosts文件有变化"
+            has_changes=true
+          fi
+          
+          # 检查adguard-hosts.txt文件
+          if [ ! -f adguard-hosts.txt ]; then
+            echo "adguard-hosts.txt文件不存在，将创建新文件"
+            has_changes=true
+          elif ! git diff --quiet adguard-hosts.txt; then
+            echo "adguard-hosts.txt文件有变化"
+            has_changes=true
+          fi
+          
+          echo "has_changes=$has_changes" >> $GITHUB_OUTPUT
+          
+          if [ "$has_changes" = "true" ]; then
+            echo "检测到文件变化，准备提交"
           else
-            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "文件无变化，跳过提交"
           fi
       
       # 5. 提交并推送更改（仅在文件有变化时）
@@ -50,8 +77,13 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "github-actions@github.com"
-          git add hosts
+          git add hosts adguard-hosts.txt
           git commit -m "🔄 自动更新hosts文件 [$(date +'%Y-%m-%d %H:%M:%S')]"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      # 6. 没有变化时的通知
+      - name: No changes notification
+        if: steps.changes.outputs.has_changes == 'false'
+        run: echo "✅ hosts文件无变化，跳过提交。"
