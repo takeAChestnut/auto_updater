@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """
-更新系统hosts文件的脚本
+更新hosts文件的脚本
 从指定的GitHub链接获取hosts内容，生成hosts文件和AdGuard DNS重写规则文件
+不更新系统hosts，只生成文件到当前目录
 """
 
 import urllib.request
 import urllib.error
-import subprocess
-import tempfile
 import os
 import sys
 import time
@@ -150,105 +149,12 @@ def save_adguard_hosts_file(records, filepath="adguard-hosts.txt"):
         print(f"❌ 保存AdGuard hosts文件失败: {e}")
         return False
 
-def backup_current_hosts():
-    """备份当前的hosts文件（如果存在）"""
-    if not os.path.exists("/etc/hosts"):
-        print("⚠️  /etc/hosts文件不存在，无需备份")
-        return True
-    
-    timestamp = time.strftime("%Y%m%d_%H%M%S")
-    backup_path = f"/etc/hosts.backup.{timestamp}"
-    
-    try:
-        with open("/etc/hosts", "r", encoding="utf-8") as f:
-            current_content = f.read()
-        
-        with open(backup_path, "w", encoding="utf-8") as f:
-            f.write(current_content)
-        print(f"✅ 已备份当前hosts文件到: {backup_path}")
-        return True
-    except PermissionError:
-        print("❌ 权限不足，需要sudo权限来备份hosts文件")
-        return False
-    except Exception as e:
-        print(f"❌ 备份hosts文件失败: {e}")
-        return False
-
-def update_system_hosts(records):
-    """更新系统的/etc/hosts文件"""
-    # 生成hosts内容（包含文件头）
-    lines = []
-    for domain, ip in sorted(records.items()):
-        lines.append(f"{ip}\t{domain}")
-    content = HEADER + "\n" + '\n'.join(lines)
-    
-    try:
-        # 使用临时文件
-        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', delete=False) as tmp_file:
-            tmp_file.write(content)
-            tmp_path = tmp_file.name
-        
-        # 移动临时文件到/etc/hosts（需要root权限）
-        subprocess.run(['sudo', 'cp', tmp_path, '/etc/hosts'], check=True)
-        subprocess.run(['sudo', 'chmod', '644', '/etc/hosts'], check=True)
-        
-        # 清理临时文件
-        os.unlink(tmp_path)
-        
-        print("✅ 系统hosts文件更新成功！")
-        print(f"更新后的文件大小: {len(content)} 字节")
-        print(f"域名记录数: {len(records)}")
-        
-        return True
-        
-    except PermissionError:
-        print("❌ 权限不足，请使用sudo运行此脚本")
-        return False
-    except subprocess.CalledProcessError as e:
-        print(f"❌ 更新hosts文件失败: {e}")
-        return False
-    except Exception as e:
-        print(f"❌ 更新过程中出错: {e}")
-        return False
-
 def main():
     print("=" * 60)
     print("开始获取和生成hosts文件")
     print("=" * 60)
     
-    # 检查/etc/hosts是否存在
-    hosts_exists = os.path.exists("/etc/hosts")
-    
-    if hosts_exists:
-        print("📁 检测到系统/etc/hosts文件存在")
-        print("将尝试更新系统hosts文件（需要管理员权限）")
-        
-        # 检查是否以root权限运行
-        if os.geteuid() != 0:
-            print("\n⚠️  注意：更新系统hosts文件需要root权限")
-            print("请使用: sudo python3 update_hosts.py")
-            print("或者输入密码进行授权")
-            print("\n如果您没有root权限，文件将保存到当前目录")
-            proceed = input("是否继续并保存到当前目录？(y/n): ").lower()
-            if proceed != 'y':
-                print("操作已取消")
-                sys.exit(0)
-            # 标记为不更新系统文件
-            update_system = False
-        else:
-            update_system = True
-            
-        # 备份当前hosts文件
-        if update_system and not backup_current_hosts():
-            print("继续操作可能会导致数据丢失，是否继续？(y/n)")
-            choice = input().lower()
-            if choice != 'y':
-                print("操作已取消")
-                sys.exit(1)
-    else:
-        print("📁 未检测到系统/etc/hosts文件")
-        print("文件将保存到当前目录")
-        update_system = False
+    print("📁 文件将保存到当前目录（不更新系统hosts）")
     
     # 获取所有hosts内容
     all_contents = []
@@ -294,17 +200,6 @@ def main():
     
     adguard_success = save_adguard_hosts_file(records, "adguard-hosts.txt")
     
-    # 根据情况选择是否更新系统hosts
-    if update_system and hosts_exists:
-        print("\n" + "-" * 60)
-        print("正在更新系统hosts文件...")
-        print("-" * 60)
-        
-        if update_system_hosts(records):
-            print("✅ 系统hosts文件更新成功！")
-        else:
-            print("❌ 系统hosts文件更新失败")
-    
     if hosts_success and adguard_success:
         print("\n" + "=" * 60)
         print("✅ 所有操作完成！")
@@ -312,13 +207,6 @@ def main():
         print("\n生成的文件：")
         print("  - hosts: 标准hosts格式文件（包含文件头）")
         print("  - adguard-hosts.txt: AdGuard DNS重写规则文件（格式：||domain^$dnsrewrite=IP）")
-        
-        # 显示DNS刷新提示
-        if update_system:
-            print("\n📋 可能需要刷新DNS缓存：")
-            print("Linux: sudo systemctl restart systemd-resolved 或 sudo /etc/init.d/nscd restart")
-            print("macOS: sudo killall -HUP mDNSResponder")
-            print("Windows: ipconfig /flushdns")
     else:
         print("❌ 部分操作失败")
 
