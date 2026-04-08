@@ -19,7 +19,7 @@ HEADER = """# Any manual change will be lost if the host name is changed or syst
 ::1             localhost
 127.0.0.1       NAS
 ::1             NAS
-192.168.31.123 mb3admin.com
+192.168.31.123  crackemby.mb6.top
 """
 
 # 要获取的hosts文件URL列表
