@@ -3,7 +3,8 @@
 ::1             localhost
 127.0.0.1       NAS
 ::1             NAS
-192.168.31.123  crackemby.mb6.top
+172.19.0.2  crackemby.mb6.top
+172.19.0.2  mb3admin.com
 
 140.82.113.25	alive.github.com
 140.82.121.5	api.github.com
