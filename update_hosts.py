@@ -13,13 +13,16 @@ import time
 import re
 from pathlib import Path
 
-# 要保留的文件头部分（保持原样）
+# 要保留的文件头部分（注释 + 本地回环记录，仅用于hosts文件）
 HEADER = """# Any manual change will be lost if the host name is changed or system upgrades.
 127.0.0.1       localhost
 ::1             localhost
 127.0.0.1       NAS
 ::1             NAS
-172.19.0.2  crackemby.mb6.top
+"""
+
+# 固定的域名解析记录（同时用于hosts和adguard-hosts.txt）
+FIXED_RECORDS = """172.19.0.2  crackemby.mb6.top
 172.19.0.2  mb3admin.com
 104.20.16.23 linux.do
 172.66.166.61 linux.do
@@ -71,41 +74,51 @@ def parse_hosts_line(line):
     
     return ip, domain
 
-def merge_and_clean_hosts(contents_list):
-    """合并多个hosts内容并去重"""
-    records = {}  # domain -> ip
+def get_all_records(contents_list):
+    """
+    获取所有记录（保留重复项）
+    返回: [(ip, domain), ...] 列表，保持顺序
+    """
+    all_records = []
     
+    # 首先添加固定的记录
+    fixed_lines = FIXED_RECORDS.strip().split('\n')
+    for line in fixed_lines:
+        ip, domain = parse_hosts_line(line)
+        if ip and domain:
+            all_records.append((ip, domain))
+    
+    # 然后添加远程获取的记录
     for content in contents_list:
         if content:
             lines = content.strip().split('\n')
             for line in lines:
                 ip, domain = parse_hosts_line(line)
                 if ip and domain:
-                    # 如果域名已存在，保留第一个出现的记录
-                    if domain not in records:
-                        records[domain] = ip
+                    all_records.append((ip, domain))
     
-    return records
+    return all_records
 
 def convert_to_adguard_format(records):
     """
     将hosts记录转换为AdGuard DNS重写规则格式
     格式: ||domain^$dnsrewrite=IP
+    保留所有记录（包括重复的）
     """
     rules = []
-    for domain, ip in sorted(records.items()):
+    for ip, domain in records:
         # 移除可能的通配符前缀
         clean_domain = domain.lstrip('*.')
         rule = f"||{clean_domain}^$dnsrewrite={ip}"
         rules.append(rule)
     return rules
 
-def save_hosts_file(records, filepath="hosts"):
-    """保存hosts文件（包含文件头）"""
+def save_hosts_file(all_records, filepath="hosts"):
+    """保存hosts文件（包含文件头，保留所有记录）"""
     try:
-        # 生成hosts内容
+        # 生成hosts内容（保留所有记录）
         lines = []
-        for domain, ip in sorted(records.items()):
+        for ip, domain in all_records:
             lines.append(f"{ip}\t{domain}")
         
         content = HEADER + "\n" + '\n'.join(lines)
@@ -119,21 +132,21 @@ def save_hosts_file(records, filepath="hosts"):
         # 显示统计信息
         total_lines = len(content.split('\n'))
         header_lines = len(HEADER.strip().split('\n'))
-        domain_count = len(records)
+        record_count = len(all_records)
         
         print(f"总行数: {total_lines}")
         print(f"文件头行数: {header_lines}")
-        print(f"域名记录数: {domain_count}")
+        print(f"域名记录数: {record_count}")
         
         return True
     except Exception as e:
         print(f"❌ 保存hosts文件失败: {e}")
         return False
 
-def save_adguard_hosts_file(records, filepath="adguard-hosts.txt"):
-    """保存AdGuard DNS重写规则文件"""
+def save_adguard_hosts_file(all_records, filepath="adguard-hosts.txt"):
+    """保存AdGuard DNS重写规则文件（保留所有记录）"""
     try:
-        rules = convert_to_adguard_format(records)
+        rules = convert_to_adguard_format(all_records)
         content = '\n'.join(rules)
         
         with open(filepath, "w", encoding="utf-8") as f:
@@ -146,6 +159,10 @@ def save_adguard_hosts_file(records, filepath="adguard-hosts.txt"):
         print("\n规则示例（前5条）：")
         for rule in rules[:5]:
             print(f"  {rule}")
+        
+        # 显示固定记录是否包含
+        fixed_lines = FIXED_RECORDS.strip().split('\n')
+        print(f"\n✅ FIXED_RECORDS中的 {len(fixed_lines)} 条记录已包含在adguard-hosts.txt中")
         
         return True
     except Exception as e:
@@ -176,40 +193,59 @@ def main():
         print("❌ 未能获取到任何hosts内容")
         sys.exit(1)
     
-    # 合并和清理内容
+    # 获取所有记录（保留重复）
     print("\n" + "-" * 60)
-    print("正在合并和清理hosts内容...")
+    print("正在合并hosts内容（保留所有记录）...")
     print("-" * 60)
     
-    records = merge_and_clean_hosts(all_contents)
+    all_records = get_all_records(all_contents)
     
-    if not records:
+    if not all_records:
         print("❌ 未能解析到有效的hosts记录")
         sys.exit(1)
     
-    print(f"解析到 {len(records)} 条有效域名记录")
+    print(f"总共获取到 {len(all_records)} 条记录")
     
-    # 保存hosts文件（包含文件头）
+    # 统计重复情况
+    domains = {}
+    for ip, domain in all_records:
+        if domain in domains:
+            domains[domain].append(ip)
+        else:
+            domains[domain] = [ip]
+    
+    duplicates = {d: ips for d, ips in domains.items() if len(ips) > 1}
+    if duplicates:
+        print(f"\n发现 {len(duplicates)} 个域名有多个IP记录：")
+        for domain, ips in duplicates.items():
+            print(f"  {domain}: {', '.join(ips)}")
+    
+    # 保存hosts文件（包含文件头，保留所有记录）
     print("\n" + "-" * 60)
     print("正在保存hosts文件...")
     print("-" * 60)
     
-    hosts_success = save_hosts_file(records, "hosts")
+    hosts_success = save_hosts_file(all_records, "hosts")
     
-    # 保存AdGuard hosts文件（使用正确的格式）
+    # 保存AdGuard hosts文件（保留所有记录）
     print("\n" + "-" * 60)
     print("正在保存AdGuard hosts文件...")
     print("-" * 60)
     
-    adguard_success = save_adguard_hosts_file(records, "adguard-hosts.txt")
+    adguard_success = save_adguard_hosts_file(all_records, "adguard-hosts.txt")
     
     if hosts_success and adguard_success:
         print("\n" + "=" * 60)
         print("✅ 所有操作完成！")
         print("=" * 60)
         print("\n生成的文件：")
-        print("  - hosts: 标准hosts格式文件（包含文件头）")
-        print("  - adguard-hosts.txt: AdGuard DNS重写规则文件（格式：||domain^$dnsrewrite=IP）")
+        print("  - hosts: 标准hosts格式文件（包含HEADER和所有记录）")
+        print("  - adguard-hosts.txt: AdGuard DNS重写规则文件（保留所有记录）")
+        print("\n说明：")
+        print("  - 所有记录都保留，不做去重")
+        print("  - FIXED_RECORDS中的记录会优先出现在文件顶部")
+        print("  - 同一个域名如果有多个IP，在hosts中会全部保留")
+        print("  - AdGuard规则中同一个域名如果有多个IP，可能会被覆盖")
     else:
         print("❌ 部分操作失败")
 
